@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
 import os, json
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -42,10 +43,6 @@ DEBUG = True
 # 모든 IP 허용
 ALLOWED_HOSTS = ['*']
 
-# 한국 시간대로 변경
-TIME_ZONE = 'Asia/Seoul'
-USE_TZ = False
-
 # Application definition
 DJANGO_APPS = [
     'django.contrib.admin',
@@ -54,15 +51,23 @@ DJANGO_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites', 
 ]
 
-
 PROJECT_APPS = [
-    
+    'accounts',
 ]
 
 THIRD_PARTY_APPS = [
     'rest_framework',
+    'rest_framework_simplejwt', 
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
@@ -71,12 +76,11 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 
 
 ROOT_URLCONF = 'config.urls'
@@ -135,7 +139,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# 한국 시간대로 변경
+TIME_ZONE = 'Asia/Seoul'
+# USE_TZ = False
+# TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -151,3 +158,34 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+######## User ########
+AUTH_USER_MODEL = 'accounts.User'
+
+######## JWT ########
+from datetime import timedelta
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES' : (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+REST_USE_JWT = True
+
+SIMPLE_JWT = {
+    'ACCES_TOKEN_LIFETIME' : timedelta(hours=3),
+    'REFRESH_TOKEN_LIFETIME' : timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS' : False,
+    'BLACKLIST_AFTER_ROTATION' : False,
+    'TOKEN_USER_CLASS' : 'accounts.User',
+}
+
+######## Google Social Login ########
+SITE_ID = 1
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username' 
+ACCOUNT_EMAIL_REQUIRED = True            
+ACCOUNT_USERNAME_REQUIRED = True        
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
