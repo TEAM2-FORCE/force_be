@@ -14,16 +14,16 @@ class Products(BaseModel):
         ('3', '샴푸')
     )
 
-    product_id = models.AutoField(primary_key=True)
-    procuct_name = models.CharField(max_length=50, verbose_name="제품 이름") 
-    product_price = models.IntegerField(verbose_name="제품 가격")
-    product_brand = models.CharField(max_length=20, verbose_name="제품 브랜드명")
-    product_purpose = models.CharField(max_length=500, verbose_name="제품 사용 목적")
+    pd_id = models.AutoField(primary_key=True)
+    pd_name = models.CharField(max_length=50, verbose_name="제품 이름") 
+    pd_price = models.IntegerField(verbose_name="제품 가격")
+    pd_brand = models.CharField(max_length=20, verbose_name="제품 브랜드명")
+    pd_purpose = models.CharField(max_length=500, verbose_name="제품 사용 목적")
     pd_usage = models.CharField(max_length=500, verbose_name="제품 사용법")
     pd_like_cnt = models.IntegerField(verbose_name="찜 개수")
     # product_image = models.ImageField(verbose_name="제품 대표 사진") # S3 연결 후 시도해보기
 
-    cg_id = models.IntegerField(choices=CHOICES) # INtegerChoices?
+    # cg_id = models.IntegerField(choices=CHOICES) # INtegerChoices?
     cg_name = models.CharField(choices=CHOICES, max_length=20)
 
 
