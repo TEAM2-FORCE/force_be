@@ -6,8 +6,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
 
-from .models import *
-from .serializers import *
+from .models import Ingredient
+from .serializers import IgdSerializer
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
 
 
 class IgdList(APIView):
@@ -32,7 +34,8 @@ class IgdList(APIView):
 class IgdDetail(APIView):
 
     # 개별 성분 조회
-    def get(self, request, id, format = None):
+    def get(self, request, id):
+    
         igd = get_object_or_404(Ingredient, igd_id = id)
         serializer = IgdSerializer(igd)
         return Response(serializer.data)
