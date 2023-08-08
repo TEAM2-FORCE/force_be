@@ -8,9 +8,7 @@ from django.http import Http404
 
 from .models import *
 from .serializers import *
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-
-
+from rest_framework.permissions import IsAuthenticated
 
 class IgdList(APIView):
     
@@ -43,21 +41,24 @@ class IgdDetail(APIView):
 
 class IgdBm(APIView):
 
-    # 전체 성분 조회
+    permission_classes = [IsAuthenticated]
+
+    # 북마크한 성분 전체 조회
     def get(self, request, format = None):
-        bm_igds = Bookmark.objects.all()
-        serializer = IgdBmSerializer(bm_igds, many = True) #다수 객체 이용
+        bm_lists = Bookmark.objects.filter(user = request.user)
+        serializer = IgdBmSerializer(bm_lists, many = True) #다수 객체 이용
         return Response(serializer.data)
 
-    # 성분 저장
+    # 성분 북마크하기
     def post(self, request, igd_id, foramt = None):
+
         try :
             igd = Ingredient.objects.get(igd_id = igd_id)
         except Ingredient.DoesNotExist:
             return Response({"error" : "Ingredients not found"}, status = status.HTTP_404_NOT_FOUND)
 
         data = {
-            "user" : request.user.id, #if request.user.is_authenticated else None,
+            "user" : request.user, 
             "igd" : igd.igd_id,
         }
 
