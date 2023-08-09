@@ -51,14 +51,15 @@ class IgdBm(APIView):
 
     # 성분 북마크하기
     def post(self, request, igd_id, foramt = None):
-
+        
         try :
             igd = Ingredient.objects.get(igd_id = igd_id)
         except Ingredient.DoesNotExist:
             return Response({"error" : "Ingredients not found"}, status = status.HTTP_404_NOT_FOUND)
 
+
         data = {
-            "user" : request.user, 
+            "user" : request.user.id, 
             "igd" : igd.igd_id,
         }
 
@@ -70,7 +71,11 @@ class IgdBm(APIView):
         else : 
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
     
-    #def delete(self, request, id):
+    # 성분 북마크 삭제하기
+    def delete(self, request, igd_id):
+        igd = get_object_or_404(Bookmark, igd_id = igd_id)
+        igd.delete()
+        return Response(status = status.HTTP_204_NO_CONTENT)
 
 from rest_framework import generics
 from rest_framework.filters import SearchFilter
