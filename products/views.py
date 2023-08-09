@@ -19,6 +19,8 @@ class ProductsList(APIView):
 
         if sort_by == 'price':
             products = Product.objects.all().order_by('pd_price')
+        elif sort_by == 'lowprice':
+            products = Product.objects.all().order_by('-pd_price')
         else:
             products = Product.objects.all()
 
@@ -36,19 +38,22 @@ class ProductsList(ListAPIView):
     def get(self, request, format=None):
         sort_standard = self.request.query_params.get('sort', 'default')
 
-        if sort_standard == 'name':
+        if sort_standard == 'default':
+            products = Product.objects.all().order_by('-pd_like_cnt')
+        
+        elif sort_standard == 'name':
             products = Product.objects.all().order_by('pd_name')
-            serializer = ProductSerializer(products, many=True)
-            return Response(serializer.data)
         
         elif sort_standard == 'price':
             products = Product.objects.all().order_by('pd_price')
-            serializer = ProductSerializer(products, many=True)
-            return Response(serializer.data)
+
+        elif sort_standard == 'lowprice':
+            products = Product.objects.all().order_by('-pd_price')
         else:
             products = Product.objects.all()
-            serializer = ProductSerializer(products, many=True)
-            return Response(serializer.data)
+        
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
         
         # products = Product.objects.all()
         # serializer = ProductSerializer(products, many=True) # 많은 값을 가져올 때는 다중값인 'many'를 True로 한다. 
