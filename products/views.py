@@ -60,6 +60,22 @@ class ProductDetail(APIView):
 
 class ProductCategory(APIView):
     def get(self, request, cg_id):
-        products = Product.objects.filter(cg_id=cg_id)
+        sort_std = self.request.query_params.get('sort', 'default')
+        product_query = Product.objects.filter(cg_id=cg_id)
+
+        if sort_std == 'default':
+            products = product_query.order_by('-pd_like_cnt')
+        
+        elif sort_std == 'name':
+            products = product_query.order_by('pd_name')
+        
+        elif sort_std == 'price':
+            products = product_query.order_by('pd_price')
+
+        elif sort_std == '-price':
+            products = product_query.order_by('-pd_price')
+        else:
+            products = product_query
+        
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
