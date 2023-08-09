@@ -17,10 +17,14 @@ from django.http import JsonResponse
 import requests
 from .models import *
 from allauth.socialaccount.models import SocialAccount
+
 from django.core.exceptions import ImproperlyConfigured
 from rest_framework import status
+from rest_framework import response
 import os
 import json
+
+from rest_framework_simplejwt.tokens import RefreshToken
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 secret_file = os.path.join(BASE_DIR, 'secrets.json') 
@@ -34,6 +38,7 @@ def get_secret(setting, secrets=secrets):
     except KeyError:
         error_msg = "Set the {} environment variable".format(setting)
         raise ImproperlyConfigured(error_msg)
+    
 
 def google_callback(request):
     client_id = '569562316946-jn23hdqjtkkosssbgrt06hpo2bat4ujp.apps.googleusercontent.com'
@@ -53,9 +58,9 @@ def google_callback(request):
     if error is not None:
         raise JSONDecodeError(error)
 
-    #### 1-3. 성공 시 access_token, id_token 가져오기
+    #### 1-3. 성공 시 access_token 가져오기
     access_token = token_req_json.get('access_token')
-    id_token = token_req_json.get('id_token')
+
 
     #### 2. 가져온 access_token으로 이메일값을 구글에 요청
     email_req = requests.get(f"https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}")
@@ -65,11 +70,50 @@ def google_callback(request):
     if email_req_status != 200:
         return JsonResponse({'err_msg': 'failed to get email'}, status=status.HTTP_400_BAD_REQUEST)
     
+    # ### 2-2. 성공 시 이메일/소셜ID 가져오기
+    # user = response.json()
+    # email = user.get('email')
+    # sub = user.get('sub')
+
+    # # 전달 받은 social_id로 user가 있는지 확인
+    # if User.objects.filter(social_id=sub).exists():
+    #     user_info = User.objects.get(social_id=sub)
+
+    #     # 소셜 로그인만 하고 회원가입은 안한 사람은 False로, 회원가입까지 한 사람은 True로 return
+    #     if user_info.is_active == False:
+    #         token = get_tokens_for_user(user_info)
+    #         return JsonResponse({
+    #             'token':token,
+    #             'is_active':user_info.is_active
+    #         }, status=200)
+    #     else:
+    #         token = get_tokens_for_user(user_info)
+    #         return JsonResponse({
+    #             'token':token,
+    #             'is_active':user_info.is_active
+    #         })
+        
+    # # 아예 회원가입 안한 사람
+    # else:
+        
+    #     new_user_info = User.objects.create(
+    #         social_id = sub,
+    #         email = email
+    #     )
+    #     new_user_info.save()
+    #     token = get_tokens_for_user(new_user_info)
+    #     return JsonResponse({
+    #         'token':token,
+    #         'is_active':new_user_info.is_active
+    #     })
+
     #### 2-2. 성공 시 이메일 가져오기
     email_req_json = email_req.json()
     email = email_req_json.get('email')
 
-    # return JsonResponse({'access': access_token, 'email':email})
+    #return JsonResponse({'access': access_token, 'email':email})
+
+    
 
     #### 3. 전달받은 이메일, access_token, code를 바탕으로 회원가입/로그인
     try:
@@ -85,16 +129,18 @@ def google_callback(request):
 
         # 이미 Google로 제대로 가입된 유저 => 로그인 & 해당 유저의 jwt 발급
         data = {'access_token': access_token, 'code': code}
-        accept = requests.post(f"{BASE_URL}accounts/user/google/login/finish/", data=data)
+        accept = requests.post(f"{BASE_URL}accounts/google/login/finish/", data=data)
         accept_status = accept.status_code
 
         # 뭔가 중간에 문제가 생기면 에러
         if accept_status != 200:
             return JsonResponse({'err_msg': 'failed to signin'}, status=accept_status)
 
-        accept_json = accept.json()
-        accept_json.pop('user', None)
-        return JsonResponse(accept_json)
+        refresh = RefreshToken.for_user(user)
+        # accept_json = accept.json()
+        # accept_json.pop('user', None)
+
+        return JsonResponse({'access_token': str(refresh.access_token)})
 
     except User.DoesNotExist:
         # 전달받은 이메일로 기존에 가입된 유저가 아예 없으면 => 새로 회원가입 & 해당 유저의 jwt 발급
@@ -110,9 +156,8 @@ def google_callback(request):
         accept_json.pop('user', None)
         return JsonResponse(accept_json)
         
-    except SocialAccount.DoesNotExist:
-    	# User는 있는데 SocialAccount가 없을 때 (=일반회원으로 가입된 이메일일때)
-        return JsonResponse({'err_msg': 'email exists but not social user'}, status=status.HTTP_400_BAD_REQUEST)
+    
+
     
 ################################
 from dj_rest_auth.registration.views import SocialLoginView
