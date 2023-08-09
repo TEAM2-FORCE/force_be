@@ -22,6 +22,7 @@ class Migration(migrations.Migration):
                 ('pd_usage', models.CharField(max_length=500, verbose_name='제품 사용법')),
                 ('pd_like_cnt', models.IntegerField(verbose_name='찜 개수')),
                 ('pd_image', models.ImageField(blank=True, null=True, upload_to='', verbose_name='제품 대표 사진')),
+                ('cg_id', models.IntegerField(choices=[('1', 'makeup'), ('2', 'skincare'), ('3', 'mask'), ('4', 'suncare')])),
             ],
             options={
                 'abstract': False,

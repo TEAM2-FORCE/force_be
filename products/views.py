@@ -46,4 +46,9 @@ class ProductDetail(APIView):
         product = Product.objects.get(pd_id=id)
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
+class ProductCategory(APIView):
+    def get(self, request, cg_id):
+        products = Product.objects.filter(cg_id=cg_id)
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
