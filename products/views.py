@@ -10,10 +10,19 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
 
+from rest_framework.generics import ListAPIView
+from rest_framework.filters import SearchFilter, OrderingFilter
+
 class ProductsList(APIView):
     def get(self, request, format=None):
-        products = Product.objects.all()
-        serializer = ProductSerializer(products, many=True) # 많은 값을 가져올 때는 다중값인 'many'를 True로 한다. 
+        sort_by = request.query_params.get('sort', 'default')
+
+        if sort_by == 'price':
+            products = Product.objects.all().order_by('pd_price')
+        else:
+            products = Product.objects.all()
+
+        serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
     
     def post(self, request, format=None):
@@ -22,6 +31,38 @@ class ProductsList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.data, status=status.HTTP_404_NOT_FOUND)
+
+class ProductsList(ListAPIView):
+    def get(self, request, format=None):
+        sort_standard = self.request.query_params.get('sort', 'default')
+
+        if sort_standard == 'name':
+            products = Product.objects.all().order_by('pd_name')
+            serializer = ProductSerializer(products, many=True)
+            return Response(serializer.data)
+        
+        elif sort_standard == 'price':
+            products = Product.objects.all().order_by('pd_price')
+            serializer = ProductSerializer(products, many=True)
+            return Response(serializer.data)
+        else:
+            products = Product.objects.all()
+            serializer = ProductSerializer(products, many=True)
+            return Response(serializer.data)
+        
+        # products = Product.objects.all()
+        # serializer = ProductSerializer(products, many=True) # 많은 값을 가져올 때는 다중값인 'many'를 True로 한다. 
+        # return Response(serializer.data)
+# class PostModelViewSet(viewsests.ModelViewSet):
+#     queryset = Post.objects.all()
+#     serializer_class = PostSerializer
+
+#     filter_backends = [SearchFilter, OrderingFilter]
+
+#     search_fidels = ['message'] # ?serch= -> QuerySet조건 절에 추가할 필드 지정, 문자열 필드만 지정 가능
+
+#     ordering_fields = ['id'] # ?ordering= -> 정렬을 허용할 필드 지정, 미지정 시에 serializer_class에 지정된 필드 사용
+#     ordering = ['id'] # 디폴트 정렬 지정
     
 class ProductDetail(APIView):
     def get_object(self, id):
