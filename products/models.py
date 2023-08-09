@@ -21,7 +21,7 @@ class Product(BaseModel):
     pd_purpose = models.CharField(max_length=500, verbose_name="제품 사용 목적")
     pd_usage = models.CharField(max_length=500, verbose_name="제품 사용법")
     pd_like_cnt = models.IntegerField(verbose_name="찜 개수")
-    # product_image = models.ImageField(verbose_name="제품 대표 사진") # S3 연결 후 시도해보기
+    pd_image = models.ImageField(null=True, blank=True, verbose_name="제품 대표 사진")
 
     # cg_id = models.IntegerField(choices=CHOICES) # INtegerChoices?
     # cg_name = models.CharField(choices=CHOICES, max_length=20)
