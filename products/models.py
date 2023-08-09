@@ -8,11 +8,12 @@ class BaseModel(models.Model):
         abstract = True
 
 class Product(BaseModel):
-    # CHOICES = (
-    #     ('1', '스킨케어'),
-    #     ('2', '선케어'),
-    #     ('3', '샴푸')
-    # )
+    CHOICES = (
+        ('1', 'makeup'),
+        ('2', 'skincare'),
+        ('3', 'mask'),
+        ('4', 'suncare')
+    )
 
     pd_id = models.AutoField(primary_key=True)
     pd_name = models.TextField(verbose_name="제품 이름") 
@@ -22,19 +23,5 @@ class Product(BaseModel):
     pd_usage = models.CharField(max_length=500, verbose_name="제품 사용법")
     pd_like_cnt = models.IntegerField(verbose_name="찜 개수")
     pd_image = models.ImageField(null=True, blank=True, verbose_name="제품 대표 사진")
-
-    # cg_id = models.IntegerField(choices=CHOICES) # INtegerChoices?
+    cg_id = models.IntegerField(choices=CHOICES)
     # cg_name = models.CharField(choices=CHOICES, max_length=20)
-
-
-# ? category를 굳이 테이블로 만들 필요가 없을듯? category를 추가, 수정, 삭제하는건 아니니까!
-# class Category(BaseModel):
-#     CHOICES = (
-#         ('1', '스킨케어'),
-#         ('2', '선케어'),
-#         ('3', '샴푸')
-#     )
-#     cg_id = models.AutoField(primary_key=True)
-#     cg_name = models.CharField(choices=CHOICES, max_length=20)
-
-
