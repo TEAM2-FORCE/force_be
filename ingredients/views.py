@@ -71,3 +71,15 @@ class IgdBm(APIView):
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
     
     #def delete(self, request, id):
+
+from rest_framework import generics
+from rest_framework.filters import SearchFilter
+from rest_framework.decorators import action
+
+
+class IgdSearchListView(generics.ListAPIView):
+    queryset = Ingredient.objects.all()
+    serializer_class = IgdSerializer
+    search_fields = ('igd_name','igd_main_ftn')
+    filter_backends = [SearchFilter]
+    
