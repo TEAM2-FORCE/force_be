@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 class BaseModel(models.Model):
     class Meta:
@@ -41,3 +42,8 @@ class Vegan(BaseModel):
     vg_id = models.AutoField(primary_key=True)
     vg_company = models.CharField(choices=VEGAN_CHOICES, max_length=70, verbose_name="비건 인증처명")
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE, blank=False)
+
+class Wishlist(BaseModel) :
+    wish_id = models.AutoField(primary_key = True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name = "wish_product_id", on_delete = models.CASCADE)
+    product = models.OneToOneField(Product, on_delete = models.CASCADE)

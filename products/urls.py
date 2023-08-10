@@ -9,4 +9,7 @@ urlpatterns = [
     path('<int:id>/market/', MarketList.as_view()),
 
     path('<int:id>/vegan/', VeganList.as_view()),
+
+    path('<int:id>/wish/', WishlistList.as_view()),
+    path('wish/', WishlistList.as_view())
 ]
