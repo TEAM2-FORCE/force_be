@@ -1,4 +1,5 @@
 from django.db import models
+from ingredients.models import Ingredient
 
 class BaseModel(models.Model):
     class Meta:
@@ -21,6 +22,7 @@ class Product(BaseModel):
     pd_like_cnt = models.IntegerField(verbose_name="찜 개수")
     pd_image = models.ImageField(null=True, blank=True, verbose_name="제품 대표 사진")
     cg_id = models.IntegerField(choices=CHOICES)
+    ingredients = models.ManyToManyField(Ingredient, related_name='products')
 
 class Market(BaseModel):
     mk_id = models.AutoField(primary_key=True)
