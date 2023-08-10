@@ -1,9 +1,6 @@
 from django.db import models
 
 class BaseModel(models.Model):
-    created_at = models.DateTimeField(verbose_name="작성일시", auto_now_add=True)
-    updated_at = models.DateTimeField(verbose_name="수정일시", auto_now=True)
-
     class Meta:
         abstract = True
 
@@ -24,3 +21,9 @@ class Product(BaseModel):
     pd_like_cnt = models.IntegerField(verbose_name="찜 개수")
     pd_image = models.ImageField(null=True, blank=True, verbose_name="제품 대표 사진")
     cg_id = models.IntegerField(choices=CHOICES)
+
+class Market(BaseModel):
+    mk_id = models.AutoField(primary_key=True)
+    mk_name = models.CharField(max_length=20, verbose_name="구매처 이름")
+    mk_link = models.URLField(max_length=500)
+    product = models.ForeignKey(to=Product, on_delete=models.CASCADE, blank=False)

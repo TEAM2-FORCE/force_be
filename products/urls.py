@@ -5,4 +5,6 @@ urlpatterns = [
     path('', ProductsList.as_view()),
     path('<int:id>/', ProductDetail.as_view()),
     path('category/<int:cg_id>/', ProductCategory.as_view()),
+
+    path('<int:id>/market/', MarketList.as_view()),
 ]

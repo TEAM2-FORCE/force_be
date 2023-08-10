@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product
+from .models import Product, Market
 
 import boto3
 from config.settings import AWS_ACCESS_KEY_ID, AWS_REGION, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
@@ -26,3 +26,8 @@ class ProductSerializer(serializers.ModelSerializer):
                 return data
             except:
                 raise serializers.ValidationError("Invalid Image File")
+
+class MarketSerializer(serializers.ModelSerializer):
+     class Meta:
+          model = Market
+          fields = "__all__"
