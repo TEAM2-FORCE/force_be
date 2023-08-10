@@ -7,4 +7,6 @@ urlpatterns = [
     path('category/<int:cg_id>/', ProductCategory.as_view()),
 
     path('<int:id>/market/', MarketList.as_view()),
+
+    path('<int:id>/vegan', VeganList.as_view()),
 ]
