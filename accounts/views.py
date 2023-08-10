@@ -139,7 +139,6 @@ def google_callback(request):
         refresh = RefreshToken.for_user(user)
         # accept_json = accept.json()
         # accept_json.pop('user', None)
-
         return JsonResponse({'access_token': str(refresh.access_token)})
 
     except User.DoesNotExist:
