@@ -1,9 +1,8 @@
 from django.db import models
-<<<<<<< HEAD
+
 from django.conf import settings
-=======
+
 from ingredients.models import Ingredient
->>>>>>> develop
 
 class BaseModel(models.Model):
     class Meta:
