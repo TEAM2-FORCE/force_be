@@ -8,6 +8,7 @@ from django.http import Http404
 
 from .models import *
 from .serializers import *
+from products.serializers import ProductSerializer
 from rest_framework.permissions import IsAuthenticated
 
 class IgdList(APIView):
@@ -87,4 +88,33 @@ class IgdSearchListView(generics.ListAPIView):
     serializer_class = IgdSerializer
     search_fields = ('igd_name','igd_main_ftn')
     filter_backends = [SearchFilter]
+
+# class IngredientProducts(APIView):
+#     def get_object(self, id):
+#         try:
+#             return Ingredient.objects.get(igd_id=id)
+#         except Ingredient.DoesNotExist:
+#             raise Http404
+
+#     def get(self, request, id):
+#         ingredient = self.get_object(id)
+#         products = ingredient.products.all()
+#         serializer = IgdSerializer(products, many=True)
+#         return Response(serializer.data)
+
+#     def post(self, request, id):
+#         ingredient_data = request.data.copy()
+#         ingredient_data['products'] = [id]  # 제품과 연결하기 위해 product pk 추가
+
+#         ingredient_serializer = IgdSerializer(data=ingredient_data)
+        
+#         if ingredient_serializer.is_valid():
+#             # 성분 생성
+#             ingredient = ingredient_serializer.save()
+
+#             return Response(ingredient_serializer.data, status=status.HTTP_201_CREATED)
+        
+#         return Response(ingredient_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
     
