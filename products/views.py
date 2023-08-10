@@ -129,7 +129,7 @@ class WishlistList(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, format = None):
+    def get(self, request, id):
         wishlist = Wishlist.objects.filter(user = request.user)
         serializer = WishlistSerializer(wishlist, many = True)
         return Response(serializer.data)
