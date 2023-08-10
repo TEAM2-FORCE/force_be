@@ -93,19 +93,10 @@ class ProductCategory(APIView):
         return Response(serializer.data)
     
 class MarketList(APIView):
-    # def post(self, request, id): # id 값을 가지는 게시물에 댓글 생성
-    #     request.data["product"] = id
-    #     serializer = MarketSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
-    def post(self, request, id): # id 값을 가지는 게시물에 댓글 생성
-        # request.data["product"] = id
+    def post(self, request, id): 
         request_data_copy = request.data.copy() # mutable 한 딕셔너리로 카피하는 메서드
         request_data_copy['product'] = id
         serializer = MarketSerializer(data=request_data_copy)
-
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
