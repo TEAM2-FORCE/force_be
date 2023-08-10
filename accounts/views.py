@@ -25,6 +25,7 @@ import os
 import json
 
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 secret_file = os.path.join(BASE_DIR, 'secrets.json') 
@@ -70,50 +71,11 @@ def google_callback(request):
     if email_req_status != 200:
         return JsonResponse({'err_msg': 'failed to get email'}, status=status.HTTP_400_BAD_REQUEST)
     
-    # ### 2-2. 성공 시 이메일/소셜ID 가져오기
-    # user = response.json()
-    # email = user.get('email')
-    # sub = user.get('sub')
-
-    # # 전달 받은 social_id로 user가 있는지 확인
-    # if User.objects.filter(social_id=sub).exists():
-    #     user_info = User.objects.get(social_id=sub)
-
-    #     # 소셜 로그인만 하고 회원가입은 안한 사람은 False로, 회원가입까지 한 사람은 True로 return
-    #     if user_info.is_active == False:
-    #         token = get_tokens_for_user(user_info)
-    #         return JsonResponse({
-    #             'token':token,
-    #             'is_active':user_info.is_active
-    #         }, status=200)
-    #     else:
-    #         token = get_tokens_for_user(user_info)
-    #         return JsonResponse({
-    #             'token':token,
-    #             'is_active':user_info.is_active
-    #         })
-        
-    # # 아예 회원가입 안한 사람
-    # else:
-        
-    #     new_user_info = User.objects.create(
-    #         social_id = sub,
-    #         email = email
-    #     )
-    #     new_user_info.save()
-    #     token = get_tokens_for_user(new_user_info)
-    #     return JsonResponse({
-    #         'token':token,
-    #         'is_active':new_user_info.is_active
-    #     })
 
     #### 2-2. 성공 시 이메일 가져오기
     email_req_json = email_req.json()
     email = email_req_json.get('email')
 
-    #return JsonResponse({'access': access_token, 'email':email})
-
-    
 
     #### 3. 전달받은 이메일, access_token, code를 바탕으로 회원가입/로그인
     try:
@@ -137,8 +99,6 @@ def google_callback(request):
             return JsonResponse({'err_msg': 'failed to signin'}, status=accept_status)
 
         refresh = RefreshToken.for_user(user)
-        # accept_json = accept.json()
-        # accept_json.pop('user', None)
         return JsonResponse({'access_token': str(refresh.access_token)})
 
     except User.DoesNotExist:
