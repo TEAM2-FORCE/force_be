@@ -11,9 +11,13 @@ from rest_framework import status
 from django.http import Http404
 
 from rest_framework.generics import ListAPIView
+from rest_framework.exceptions import NotFound
+
 
 class ProductsList(ListAPIView):
-    def get(self, request, format=None):
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
         sort_std = self.request.query_params.get('sort', 'default')
         product_query = Product.objects.all()
 
@@ -32,16 +36,17 @@ class ProductsList(ListAPIView):
             products = product_query
         
         serializer = ProductSerializer(products, many=True)
-        return Response(serializer.data)
+        return products
     
 class ProductDetail(APIView):
     def get_object(self, id):
-        product = Product.objects.get(id=Product.pd_id)
-        self.check_object_permissions(self.request, product)
-        return product
-    
+        try:
+            return Product.objects.get(pd_id=id)
+        except Product.DoesNotExist:
+            raise NotFound(detail="Product not found")
+
     def get(self, request, id):
-        product = Product.objects.get(pd_id=id)
+        product = self.get_object(id)
         serializer = ProductSerializer(product)
         return Response(serializer.data)
 
