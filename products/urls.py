@@ -12,4 +12,7 @@ urlpatterns = [
 
     path('<int:id>/wish/', WishlistList.as_view()),
     path('wish/', WishlistList.as_view())
+    
+    path('<int:id>/ingredients/', ProductIngredients.as_view()),
+
 ]
