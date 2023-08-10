@@ -8,7 +8,7 @@ from config.settings import AWS_ACCESS_KEY_ID, AWS_REGION, AWS_SECRET_ACCESS_KEY
 VALID_IMAGE_EXTENSIONS = [ "jpg", "jpeg", "png", "gif" ]
 
 class ProductSerializer(serializers.ModelSerializer):
-    ingredients = IgdSeri(many=True, read_only=True)
+    ingredients = IgdSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
