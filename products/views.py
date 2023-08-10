@@ -5,6 +5,8 @@ from django.shortcuts import get_object_or_404
 from .models import Product, Market, Vegan
 from .serializers import ProductSerializer, MarketSerializer, VeganSerializer
 
+from ingredients.serializers import IgdSerializer
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -121,3 +123,51 @@ class VeganList(APIView):
         vegans = Vegan.objects.filter(product=id)
         serializer = VeganSerializer(vegans, many=True)
         return Response(serializer.data)
+    
+# class ProductMapping(APIView):
+#     def post(self, request, id): 
+#         request_data_copy = request.data.copy() 
+#         request_data_copy['product'] = id
+#         serializer = VeganSerializer(data=request_data_copy)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+    
+#     def get(self, request, id):
+#         vegans = Vegan.objects.filter(product=id)
+#         serializer = VeganSerializer(vegans, many=True)
+#         return Response(serializer.data)
+
+class ProductIngredients(APIView):
+    def get_object(self, id):
+        try:
+            return Product.objects.get(pd_id=id)
+        except Product.DoesNotExist:
+            raise Http404
+
+    def get(self, request, id):
+        product = self.get_object(id)
+        ingredients = product.ingredients.all()  # 다대다 관계에서 ingredients 가져오기
+        serializer = IgdSerializer(ingredients, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request, id):
+        product = self.get_object(id)
+        ingredient_data = request.data.copy()
+        ingredient_data['products'] = [product.pd_id]
+
+        ingredient_serializer = IgdSerializer(data=ingredient_data)
+        
+        if ingredient_serializer.is_valid():
+            # 성분 생성
+            ingredient = ingredient_serializer.save()
+
+            # 성분과 제품 연결
+            product.ingredients.add(ingredient)
+
+            return Response(ingredient_serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(ingredient_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
