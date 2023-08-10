@@ -10,18 +10,29 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
 
-class ProductsList(APIView):
+from rest_framework.generics import ListAPIView
+
+class ProductsList(ListAPIView):
     def get(self, request, format=None):
-        products = Product.objects.all()
-        serializer = ProductSerializer(products, many=True) # 많은 값을 가져올 때는 다중값인 'many'를 True로 한다. 
+        sort_std = self.request.query_params.get('sort', 'default')
+        product_query = Product.objects.all()
+
+        if sort_std == 'default':
+            products = product_query.order_by('-pd_like_cnt')
+        
+        elif sort_std == 'name':
+            products = product_query.order_by('pd_name')
+        
+        elif sort_std == 'price':
+            products = product_query.order_by('pd_price')
+
+        elif sort_std == '-price':
+            products = product_query.order_by('-pd_price')
+        else:
+            products = product_query
+        
+        serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
-    
-    def post(self, request, format=None):
-        serializer = ProductSerializer(data = request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.data, status=status.HTTP_404_NOT_FOUND)
     
 class ProductDetail(APIView):
     def get_object(self, id):
@@ -49,6 +60,22 @@ class ProductDetail(APIView):
 
 class ProductCategory(APIView):
     def get(self, request, cg_id):
-        products = Product.objects.filter(cg_id=cg_id)
+        sort_std = self.request.query_params.get('sort', 'default')
+        product_query = Product.objects.filter(cg_id=cg_id)
+
+        if sort_std == 'default':
+            products = product_query.order_by('-pd_like_cnt')
+        
+        elif sort_std == 'name':
+            products = product_query.order_by('pd_name')
+        
+        elif sort_std == 'price':
+            products = product_query.order_by('pd_price')
+
+        elif sort_std == '-price':
+            products = product_query.order_by('-pd_price')
+        else:
+            products = product_query
+        
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
