@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Market
+from .models import Product, Market, Vegan
 
 import boto3
 from config.settings import AWS_ACCESS_KEY_ID, AWS_REGION, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
@@ -30,4 +30,9 @@ class ProductSerializer(serializers.ModelSerializer):
 class MarketSerializer(serializers.ModelSerializer):
      class Meta:
           model = Market
+          fields = "__all__"
+
+class VeganSerializer(serializers.ModelSerializer):
+     class Meta:
+          model = Vegan
           fields = "__all__"
