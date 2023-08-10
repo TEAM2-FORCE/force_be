@@ -25,4 +25,5 @@ class Product(BaseModel):
 class Market(BaseModel):
     mk_id = models.AutoField(primary_key=True)
     mk_name = models.CharField(max_length=20, verbose_name="구매처 이름")
-    pd_id = models.ForeignKey(to=Product, on_delete=models.CASCADE)
+    mk_link = models.URLField(max_length=500)
+    product = models.ForeignKey(to=Product, on_delete=models.CASCADE, blank=False)
