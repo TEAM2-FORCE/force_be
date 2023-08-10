@@ -27,3 +27,16 @@ class Market(BaseModel):
     mk_name = models.CharField(max_length=20, verbose_name="구매처 이름")
     mk_link = models.URLField(max_length=500)
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE, blank=False)
+
+class Vegan(BaseModel):
+    # vg_id = models.AuthoField(primary_key=True)
+    VEGAN_CHOICES = (
+        ('1', '한국비건인증원'),
+        ('2', '프랑스 이브 비건'),
+        ('3', '이탈리아 브이라벨'),
+        ('4', '비건 소사이어티'),
+        ('5', 'PETA Beauty without bunny - global animal test-free'),
+        ('6', 'PETA Beauty without bunny - global animal test-free and vegan'),
+        ('7', '벨기에 바이오리우스')
+    )
+    vg_id = models.IntegerField(choices=VEGAN_CHOICES)
