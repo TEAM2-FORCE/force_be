@@ -29,15 +29,15 @@ class Market(BaseModel):
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE, blank=False)
 
 class Vegan(BaseModel):
-    # vg_id = models.AuthoField(primary_key=True)
     VEGAN_CHOICES = (
-        ('1', '한국비건인증원'),
-        ('2', '프랑스 이브 비건'),
-        ('3', '이탈리아 브이라벨'),
-        ('4', '비건 소사이어티'),
-        ('5', 'PETA Beauty without bunny - global animal test-free'),
-        ('6', 'PETA Beauty without bunny - global animal test-free and vegan'),
-        ('7', '벨기에 바이오리우스')
+        ('Korea agency of Vegan Certification and Services', '한국비건인증원'),
+        ('Expertise Vegan Europe', '프랑스이브비건'),
+        ('V Label Italia srl', '이탈리아브이라벨'),
+        ('The Vegan Society', '영국비건소사이어티'),
+        ('PETA Beauty without bunny - global animal test-free', 'PETA1'),
+        ('PETA Beauty without bunny - global animal test-free and vegan', 'PETA2'),
+        ('Biorius', '벨기에 바이오리우스')
     )
-    vg_id = models.IntegerField(choices=VEGAN_CHOICES, verbose_name="비건 인증처명")
+    vg_id = models.AutoField(primary_key=True)
+    vg_company = models.CharField(choices=VEGAN_CHOICES, max_length=70, verbose_name="비건 인증처명")
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE, blank=False)
