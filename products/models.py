@@ -40,3 +40,4 @@ class Vegan(BaseModel):
         ('7', '벨기에 바이오리우스')
     )
     vg_id = models.IntegerField(choices=VEGAN_CHOICES, verbose_name="비건 인증처명")
+    product = models.ForeignKey(to=Product, on_delete=models.CASCADE, blank=False)
