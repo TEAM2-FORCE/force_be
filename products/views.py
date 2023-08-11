@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
-from .models import Product, Market, Vegan
-from .serializers import ProductSerializer, MarketSerializer, VeganSerializer
+from .models import Product, Market, Vegan, Wishlist
+from .serializers import ProductSerializer, MarketSerializer, VeganSerializer, WishlistSerializer
 
 from ingredients.serializers import IgdSerializer
 
@@ -15,6 +15,7 @@ from django.http import Http404
 from rest_framework.generics import ListAPIView
 from rest_framework.exceptions import NotFound
 
+from rest_framework.permissions import IsAuthenticated
 
 class ProductsList(ListAPIView):
     serializer_class = ProductSerializer
@@ -123,21 +124,39 @@ class VeganList(APIView):
         vegans = Vegan.objects.filter(product=id)
         serializer = VeganSerializer(vegans, many=True)
         return Response(serializer.data)
+
+class WishlistList(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id):
+        wishlist = Wishlist.objects.filter(user = request.user)
+        serializer = WishlistSerializer(wishlist, many = True)
+        return Response(serializer.data)
+
+    def post(self, request, id, foramt = None):
+        try :
+            product = Product.objects.get(pd_id = id)
+        except Product.DoesNotExist:
+            return Response({"error" : "Products not found"}, status = status.HTTP_404_NOT_FOUND)
+
+        data = {
+            "user" : request.user.id, 
+            "product" : product.pd_id,
+        }
+
+        serializer = WishlistSerializer(data = data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+        else : 
+            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
     
-# class ProductMapping(APIView):
-#     def post(self, request, id): 
-#         request_data_copy = request.data.copy() 
-#         request_data_copy['product'] = id
-#         serializer = VeganSerializer(data=request_data_copy)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
-    
-#     def get(self, request, id):
-#         vegans = Vegan.objects.filter(product=id)
-#         serializer = VeganSerializer(vegans, many=True)
-#         return Response(serializer.data)
+    def delete(self, request, id):
+        product = get_object_or_404(Product, pd_id = id)
+        product.delete()
+        return Response(status = status.HTTP_204_NO_CONTENT)
 
 class ProductIngredients(APIView):
     def get_object(self, id):
