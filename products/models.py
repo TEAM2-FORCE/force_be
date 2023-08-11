@@ -25,7 +25,14 @@ class Product(BaseModel):
     pd_like_cnt = models.IntegerField(verbose_name="찜 개수")
     pd_image = models.ImageField(null=True, blank=True, verbose_name="상품 대표 사진")
     cg_id = models.IntegerField(choices=CHOICES)
-    ingredients = models.ManyToManyField(Ingredient, verbose_name="상품이 포함하는 성분들", blank=True)
+    
+    # 성분에서 상품 역참조 이름 product_ingredients로 명시
+    ingredients = models.ForeignKey(Ingredient, related_name = "product_ingredients", verbose_name="상품이 포함하는 성분들", blank=True, on_delete = models.CASCADE)
+
+# 다대다 관계를 일대다, 다대일로 풀기 위한 중간 모델 생성
+class ProductIngredient(BaseModel):
+    product = models.ForeignKey(Product, on_delete = models.CASCADE, related_name = 'product_ingredients')
+    ingredient = models.ForeignKey(Ingredient, on_delete = models.CASCADE, related_name = 'ingredient_products')   
 
 class Market(BaseModel):
     mk_id = models.AutoField(primary_key=True)
