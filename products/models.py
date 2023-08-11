@@ -24,8 +24,8 @@ class Product(BaseModel):
     pd_usage = models.CharField(max_length=500, verbose_name="상품 사용법")
     pd_like_cnt = models.IntegerField(verbose_name="찜 개수")
     pd_image = models.ImageField(null=True, blank=True, verbose_name="상품 대표 사진")
-    cg_id = models.IntegerField(choices=CHOICES)
-    
+    cg_id = models.IntegerField(choices=CHOICES, null = True) #에러 막기 위한 null 값 
+
     # 성분에서 상품 역참조 이름 product_ingredients로 명시
     ingredients = models.ForeignKey(Ingredient, related_name = "product_ingredients", verbose_name="상품이 포함하는 성분들", blank=True, on_delete = models.CASCADE)
 
