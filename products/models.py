@@ -48,7 +48,6 @@ class Vegan(BaseModel):
         ('The Vegan Society', '영국비건소사이어티'),
         ('PETA Beauty without bunny - global animal test-free', 'PETA1'),
         ('PETA Beauty without bunny - global animal test-free and vegan', 'PETA2'),
-        ('Biorius', '벨기에 바이오리우스')
     )
     vg_id = models.AutoField(primary_key=True)
     vg_company = models.CharField(choices=VEGAN_CHOICES, max_length=70, verbose_name="비건 인증처명")
