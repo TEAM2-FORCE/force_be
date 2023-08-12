@@ -11,5 +11,5 @@ urlpatterns = [
 
     path('', IgdSearchListView.as_view(), name = 'ingredeint_search'),
 
-    # path('<int:id>/products/', IngredientProducts.as_view()),
+    path('<int:id>/products/', IngredientProducts.as_view()),
 ]

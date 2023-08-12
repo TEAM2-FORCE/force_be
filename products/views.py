@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
-from .models import Product, Market, Vegan, Wishlist
+from .models import Product, Market, Vegan, Wishlist, ProductIngredient
 from .serializers import ProductSerializer, MarketSerializer, VeganSerializer, WishlistSerializer
 
 from ingredients.serializers import IgdSerializer
