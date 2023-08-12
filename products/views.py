@@ -41,7 +41,6 @@ class ProductsList(ListAPIView):
         else:
             products = product_query
         
-        serializer = ProductSerializer(products, many=True)
         return products
     
     def post(self, request, format=None):
