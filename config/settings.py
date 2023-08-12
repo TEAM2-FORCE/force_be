@@ -110,8 +110,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'vebe',
+        'USER': 'root',
+        'PASSWORD' : get_secret("DB_PASSWORD"),
+        'HOST' : get_secret("DB_HOST"),
+        'PORT' : '3306',
     }
 }
 

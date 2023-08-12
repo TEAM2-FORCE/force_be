@@ -10,10 +10,10 @@ class BaseModel(models.Model):
 
 class Product(BaseModel):
     CHOICES = (
-        ('1', 'makeup'),
-        ('2', 'skincare'),
-        ('3', 'mask'),
-        ('4', 'suncare')
+        (1, 'makeup'),
+        (2, 'skincare'),
+        (3, 'mask'),
+        (4, 'suncare')
     )
 
     pd_id = models.AutoField(primary_key=True)
