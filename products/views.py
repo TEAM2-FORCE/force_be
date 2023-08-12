@@ -17,6 +17,9 @@ from rest_framework.exceptions import NotFound
 
 from rest_framework.permissions import IsAuthenticated
 
+from rest_framework import generics
+from rest_framework.filters import SearchFilter
+
 class ProductsList(ListAPIView):
     serializer_class = ProductSerializer
 
@@ -94,6 +97,12 @@ class ProductCategory(APIView):
         
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
+
+class ProductSearchListView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    search_fields = ('pd_name', 'pd_brand')
+    filter_backends = [SearchFilter]
     
 class MarketList(APIView):
     def post(self, request, id): 
