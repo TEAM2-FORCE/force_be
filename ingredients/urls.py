@@ -10,4 +10,6 @@ urlpatterns = [
     path('bm/', IgdBm.as_view(), name = 'ingredients_bookmark_list'),
 
     path('', IgdSearchListView.as_view(), name = 'ingredeint_search'),
+
+    path('<int:id>/products/', IngredientProducts.as_view()),
 ]
