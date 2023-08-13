@@ -17,7 +17,7 @@ class IgdList(APIView):
     
     # 전체 성분 조회
     def get(self, request, format = None):
-        igds = Ingredient.objects.all()
+        igds = Ingredient.objects.all().order_by('igd_name')
         serializer = IgdSerializer(igds, many = True) #다수 객체 이용
         return Response(serializer.data)
 
