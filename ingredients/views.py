@@ -84,12 +84,31 @@ from rest_framework import generics
 from rest_framework.filters import SearchFilter
 from rest_framework.decorators import action
 
-
+# 성분 검색
 class IgdSearchListView(generics.ListAPIView):
     queryset = Ingredient.objects.all()
     serializer_class = IgdSerializer
     search_fields = ('igd_name','igd_main_ftn')
     filter_backends = [SearchFilter]
+
+from .filters import IgdCautionFilter
+
+# 주의성분 필터링
+class IgdFilterListView(generics.ListAPIView) :
+    serializer_class = IgdSerializer
+    filter_class = IgdCautionFilter
+
+    def get_queryset(self):
+        queryset = Ingredient.objects.all()
+
+        igd_caution_param = self.request.query_params.get('igd_caution')
+
+        if igd_caution_param is not None:
+            igd_caution = igd_caution_param.lower() == 'true'
+            queryset = queryset.filter(igd_caution=igd_caution)
+
+        return queryset
+        
 
 class IngredientProducts(APIView):
     def get_object(self, id):
