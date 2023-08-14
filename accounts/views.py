@@ -55,9 +55,12 @@ def get_redirect_url(request):
 def google_callback(request):
     client_id = '1084783697214-fg1r9e3q4glg96hl5t15ghmsr1piicko.apps.googleusercontent.com'
     client_secret = get_secret('CLIENT_SECRET')
-    code = request.GET.get('code')
-    state = "random_state"
+    body = json.loads(request.body.decode('utf-8'))
+    code = body['code']
+    state = 'state_parameter_passthrough_value'
+    
     redirect_uri = get_redirect_url(request)
+    #redirect_uri = 'http://localhost:3000/oauth2redirect'
 
     # 1. 받은 코드로 구글에 access token 요청
     token_req = requests.post(f"https://oauth2.googleapis.com/token?client_id={client_id}&client_secret={client_secret}&code={code}&grant_type=authorization_code&redirect_uri={redirect_uri}&state={state}")
