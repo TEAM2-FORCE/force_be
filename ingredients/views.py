@@ -129,7 +129,8 @@ class IngredientProducts(APIView):
 
         ingredient_serializer = IgdSerializer(data=ingredient_data)
         
-        if ingredient_serializer.is_valid():
+        
+        if product_serializer.is_valid():
             # 성분 생성
             ingredient = ingredient_serializer.save()
 
@@ -138,4 +139,11 @@ class IngredientProducts(APIView):
         return Response(ingredient_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     
-    
+class BookmarkIngredient(APIView):
+    bookmarked_ingredients = Bookmark.objects.select_related('igd').all()
+
+
+    def get(self, request):
+        serializer = IgdBmSerializer(self.bookmarked_ingredients, many = True)
+        return Response(serializer.data, status = status.HTTP_200_OK)
+
