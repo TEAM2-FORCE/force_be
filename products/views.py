@@ -126,13 +126,13 @@ class ProductCategory(APIView):
         
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
-    
+
 class ProductSearchListView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     search_fields = ('pd_name', 'pd_brand')
     filter_backends = [SearchFilter]
-
+    
 class MarketList(APIView):
     def post(self, request, id): 
         request_data_copy = request.data.copy() # mutable 한 딕셔너리로 카피하는 메서드
@@ -226,5 +226,3 @@ class ProductIngredients(APIView):
             return Response(ingredient_serializer.data, status=status.HTTP_201_CREATED)
         
         return Response(ingredient_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
