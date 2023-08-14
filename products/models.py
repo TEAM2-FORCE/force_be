@@ -17,7 +17,7 @@ class Vegan(BaseModel):
         ('PETA Beauty without bunny - global animal test-free', 'PETA1'),
         ('PETA Beauty without bunny - global animal test-free and vegan', 'PETA2'),
     )
-    vg_id = models.AutoField(primary_key=True)
+    # vg_id = models.AutoField(primary_key=True)
     vg_company = models.CharField(choices=VEGAN_CHOICES, max_length=70, verbose_name="비건 인증처명")
 
 class Product(BaseModel):

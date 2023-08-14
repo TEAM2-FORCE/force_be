@@ -7,6 +7,10 @@ import boto3
 from config.settings import AWS_ACCESS_KEY_ID, AWS_REGION, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
 VALID_IMAGE_EXTENSIONS = [ "jpg", "jpeg", "png", "gif" ]
 
+class IngredientFilterSerializer(serializers.Serializer):
+    include_ingredients = serializers.ListField(child=serializers.CharField(), required=False)
+    exclude_ingredients = serializers.ListField(child=serializers.CharField(), required=False)
+
 class MarketSerializer(serializers.ModelSerializer):
     class Meta:
           model = Market

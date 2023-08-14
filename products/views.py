@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
 from .models import Product, Market, Vegan, Wishlist, ProductIngredient
-from .serializers import ProductSerializer, MarketSerializer, VeganSerializer, WishlistSerializer
+from .serializers import ProductSerializer, MarketSerializer, VeganSerializer, WishlistSerializer, IngredientFilterSerializer
 
 from ingredients.serializers import IgdSerializer
 
@@ -19,6 +19,55 @@ from rest_framework.permissions import IsAuthenticated
 
 from rest_framework import generics
 from rest_framework.filters import SearchFilter
+
+from rest_framework import filters, viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import FilterSet
+from django.db.models import Q
+
+
+# class ProductFilter(FilterSet):
+#     included_ingredients = filters.CharField(method='filter_included_ingredients')
+#     excluded_ingredients = filters.CharField(method='filter_excluded_ingredients')
+#     # filtering_vegan = filters.CharFilter(method='filter_vegan')
+
+#     class Meta:
+#         model = Product
+#         fields = ['included_ingredients', 'excluded_ingredients']
+    
+#     def filter_included_ingredients(self, queryset, name, value):
+#         ingredients = value.split(',')
+#         for ingredient in ingredients:
+#             queryset = queryset.filter(ingredients__name__iexact=ingredient.strip())
+#         return queryset
+
+#     def filter_excluded_ingredients(self, queryset, name, value):
+#         ingredients = value.split(',')
+#         for ingredient in ingredients:
+#             queryset = queryset.exclude(ingredients__name__iexact=ingredient.strip())
+#         return queryset
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+class ProductFilterView(APIView):
+    def get(self, request, format=None):
+        serializer = IngredientFilterSerializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+
+        include_ingredients = serializer.validated_data.get('include_ingredients', [])
+        exclude_ingredients = serializer.validated_data.get('exclude_ingredients', [])
+
+        # 여기서 필터링 로직을 적용하여 products를 가져옵니다.
+        # 예를 들어, Model.objects.filter(ingredients__name__in=include_ingredients)와 같은 방식으로 필터링을 적용할 수 있습니다.
+        filtered_products = Product.objects.all()  # 모든 products를 가져오고
+        if include_ingredients:
+            filtered_products = filtered_products.filter(ingredients__igd_name__in=include_ingredients)  # 특정 성분을 포함하는 것만 필터링
+        if exclude_ingredients:
+            filtered_products = filtered_products.exclude(ingredients__igd_name__in=exclude_ingredients)  # 특정 성분을 제외한 것만 필터링
+
+        # 필터링된 products를 직렬화하여 반환합니다.
+        serialized_products = ProductSerializer(filtered_products, many=True)
+        return Response(serialized_products.data)
 
 class ProductsList(ListAPIView):
     serializer_class = ProductSerializer
@@ -49,21 +98,6 @@ class ProductsList(ListAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.data, status=status.HTTP_404_NOT_FOUND)
-
-    # def post(self, request, formant=None):
-    #     product = Product.object.all()
-    #     serializer = ProductSerializer(data = request.data)
-
-    #     vegan_data = request.data.copy()
-    #     vegan_serializer = ProductSerializer(data = vegan_data)
-
-    #     if serializer.is_valid():
-    #         vegan = vegan_serializer.save()
-            
-    #         product.vegan_cert.add(vegan)
-
-    #         return Response(serializer, status=status.HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ProductDetail(APIView):
     def get_object(self, id):
