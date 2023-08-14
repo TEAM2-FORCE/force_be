@@ -131,7 +131,6 @@ class IngredientProducts(APIView):
         product_serializer = ProductSerializer(data=product_data)
         
         if product_serializer.is_valid():
-        if product_serializer.is_valid():
             # 성분 생성
             ingredient = product_serializer.save()
 
