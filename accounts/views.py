@@ -51,7 +51,7 @@ def get_redirect_url(request):
 
 
 def google_callback(request):
-    client_id = '569562316946-jn23hdqjtkkosssbgrt06hpo2bat4ujp.apps.googleusercontent.com'
+    client_id = '1084783697214-fg1r9e3q4glg96hl5t15ghmsr1piicko.apps.googleusercontent.com'
     client_secret = get_secret('CLIENT_SECRET')
     code = request.GET.get('code')
     state = "random_state"
