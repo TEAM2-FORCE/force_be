@@ -16,4 +16,7 @@ urlpatterns = [
 
     path('category/<int:cg_id>/search/', ProductSearchListView.as_view()),
     path('search/', ProductSearchListView.as_view()),
+
+    path('filter/', ProductFilterView.as_view(), name='product-filter'),
+
 ]
