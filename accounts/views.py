@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 
 BASE_URL = 'http://localhost:8000/'
 GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
-
+#GOOGLE_CALLBACK_URI = 'https://mportal.cau.ac.kr/main.do'
 def google_login(request):
     scope = "https://www.googleapis.com/auth/userinfo.email " + \
             "https://www.googleapis.com/auth/userinfo.profile"

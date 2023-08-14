@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Market, Vegan, Wishlist
+from .models import Product, Market, Vegan, Wishlist, ProductIngredient
 
 from ingredients.serializers import IgdSerializer
 
@@ -7,9 +7,10 @@ import boto3
 from config.settings import AWS_ACCESS_KEY_ID, AWS_REGION, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
 VALID_IMAGE_EXTENSIONS = [ "jpg", "jpeg", "png", "gif" ]
 
+
 class ProductSerializer(serializers.ModelSerializer):
     ingredients = IgdSerializer(many=True, read_only=True)
-
+    
     class Meta:
         model = Product
         fields = "__all__"
