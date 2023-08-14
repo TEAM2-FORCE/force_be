@@ -120,23 +120,23 @@ class IngredientProducts(APIView):
     def get(self, request, id):
         ingredient = self.get_object(id)
         products = ingredient.products.all()
-        serializer = IgdSerializer(products, many=True)
+        serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
 
     def post(self, request, id):
-        ingredient_data = request.data.copy()
-        ingredient_data['products'] = [id]  # 제품과 연결하기 위해 product pk 추가
+        ingredient = self.get_object(id)
+        product_data = request.data.copy()
+        product_data['ingredients'] = [ingredient.igd_id]  # 제품과 연결하기 위해 product pk 추가
 
-        ingredient_serializer = IgdSerializer(data=ingredient_data)
-        
+        product_serializer = ProductSerializer(data=product_data)
         
         if product_serializer.is_valid():
             # 성분 생성
-            ingredient = ingredient_serializer.save()
+            ingredient = product_serializer.save()
 
-            return Response(ingredient_serializer.data, status=status.HTTP_201_CREATED)
+            return Response(product_serializer.data, status=status.HTTP_201_CREATED)
         
-        return Response(ingredient_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(product_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     
 class BookmarkIngredient(APIView):
