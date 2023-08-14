@@ -1,14 +1,14 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 
-BASE_URL = 'http://localhost:8000/'
-GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
+BASE_URL = 'http://localhost:3000/'
+#GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
 
-def google_login(request):
-    scope = "https://www.googleapis.com/auth/userinfo.email " + \
-            "https://www.googleapis.com/auth/userinfo.profile"
-    client_id = '569562316946-jn23hdqjtkkosssbgrt06hpo2bat4ujp.apps.googleusercontent.com'
-    return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&response_type=code&redirect_uri={GOOGLE_CALLBACK_URI}&scope={scope}")
+# def google_login(request):
+#     scope = "https://www.googleapis.com/auth/userinfo.email " + \
+#             "https://www.googleapis.com/auth/userinfo.profile"
+#     client_id = '569562316946-jn23hdqjtkkosssbgrt06hpo2bat4ujp.apps.googleusercontent.com'
+#     return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&response_type=code&redirect_uri={GOOGLE_CALLBACK_URI}&scope={scope}")
 
 ################################
 from pathlib import Path
@@ -25,7 +25,6 @@ import os
 import json
 
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.tokens import AccessToken
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 secret_file = os.path.join(BASE_DIR, 'secrets.json') 
@@ -41,14 +40,25 @@ def get_secret(setting, secrets=secrets):
         raise ImproperlyConfigured(error_msg)
     
 
+def get_redirect_url(request):
+    host = request.META.get('HTTP_REFERER')
+    scheme = request.scheme
+    
+    if host == 'http://localhost:3000/':
+        redirect_uri = 'http://localhost:3000/oauth2redirect'
+    else:
+        redirect_uri = 'https://vebeserver.kro.kr/oauth2redirect'
+
+
 def google_callback(request):
     client_id = '569562316946-jn23hdqjtkkosssbgrt06hpo2bat4ujp.apps.googleusercontent.com'
     client_secret = get_secret('CLIENT_SECRET')
     code = request.GET.get('code')
     state = "random_state"
+    redirect_uri = get_redirect_url(request)
 
     # 1. 받은 코드로 구글에 access token 요청
-    token_req = requests.post(f"https://oauth2.googleapis.com/token?client_id={client_id}&client_secret={client_secret}&code={code}&grant_type=authorization_code&redirect_uri={GOOGLE_CALLBACK_URI}&state={state}")
+    token_req = requests.post(f"https://oauth2.googleapis.com/token?client_id={client_id}&client_secret={client_secret}&code={code}&grant_type=authorization_code&redirect_uri={redirect_uri}&state={state}")
     
     #### 1-1. json으로 변환 & 에러 부분 파싱
     token_req_json = token_req.json()
@@ -119,12 +129,12 @@ def google_callback(request):
 
     
 ################################
-from dj_rest_auth.registration.views import SocialLoginView
-from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-from allauth.socialaccount.providers.google import views as google_view
+# from dj_rest_auth.registration.views import SocialLoginView
+# from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+# from allauth.socialaccount.providers.google import views as google_view
 
-class GoogleLogin(SocialLoginView):
-    adapter_class = google_view.GoogleOAuth2Adapter
-    callback_url = GOOGLE_CALLBACK_URI
-    client_class = OAuth2Client
+# class GoogleLogin(SocialLoginView):
+#     adapter_class = google_view.GoogleOAuth2Adapter
+#     callback_url = GOOGLE_CALLBACK_URI
+#     client_class = OAuth2Client
     
