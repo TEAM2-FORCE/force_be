@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 
-BASE_URL = 'http://localhost:3000/'
-#GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
+BASE_URL = 'http://vebeserver.kro.kr:8000/'
+LOCAL_URL = 'http://localhost:8000/'
+GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
+TEST = LOCAL_URL + 'accounts/google/callback/'
 
 # def google_login(request):
 #     scope = "https://www.googleapis.com/auth/userinfo.email " + \
@@ -42,16 +44,16 @@ def get_secret(setting, secrets=secrets):
 
 def get_redirect_url(request):
     host = request.META.get('HTTP_REFERER')
-    scheme = request.scheme
     
     if host == 'http://localhost:3000/':
         redirect_uri = 'http://localhost:3000/oauth2redirect'
     else:
         redirect_uri = 'https://vebeserver.kro.kr/oauth2redirect'
 
+    return redirect_uri
 
 def google_callback(request):
-    client_id = '569562316946-jn23hdqjtkkosssbgrt06hpo2bat4ujp.apps.googleusercontent.com'
+    client_id = '1084783697214-fg1r9e3q4glg96hl5t15ghmsr1piicko.apps.googleusercontent.com'
     client_secret = get_secret('CLIENT_SECRET')
     code = request.GET.get('code')
     state = "random_state"
