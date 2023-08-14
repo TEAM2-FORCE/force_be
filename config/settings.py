@@ -113,13 +113,19 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'vebe',
         'USER': 'root',
-        # 'PASSWORD' : get_secret("DB_PASSWORD"),
-        # 'HOST' : get_secret("DB_HOST"),
-        'PASSWORD' : '1234',
-        'HOST' : 'localhost',
+        'PASSWORD' : get_secret("DB_PASSWORD"),
+        'HOST' : get_secret("DB_HOST"),
+        # 'PASSWORD' : '1234',
+        # 'HOST' : 'localhost',
         'PORT' : '3306',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
