@@ -56,14 +56,22 @@ class ProductFilterView(APIView):
 
         include_ingredients = serializer.validated_data.get('include_ingredients', [])
         exclude_ingredients = serializer.validated_data.get('exclude_ingredients', [])
+        certification_names = serializer.validated_data.get('certification_names', [])
 
-        # 여기서 필터링 로직을 적용하여 products를 가져옵니다.
-        # 예를 들어, Model.objects.filter(ingredients__name__in=include_ingredients)와 같은 방식으로 필터링을 적용할 수 있습니다.
-        filtered_products = Product.objects.all()  # 모든 products를 가져오고
-        if include_ingredients:
-            filtered_products = filtered_products.filter(ingredients__igd_name__in=include_ingredients)  # 특정 성분을 포함하는 것만 필터링
-        if exclude_ingredients:
-            filtered_products = filtered_products.exclude(ingredients__igd_name__in=exclude_ingredients)  # 특정 성분을 제외한 것만 필터링
+        filtered_products = Product.objects.all()
+
+        for ingredient in include_ingredients:
+            ingredients = ingredient.split(',')
+            for ing in ingredients:
+                filtered_products = filtered_products.filter(ingredients__igd_name=ing.strip())
+
+        for ingredient in exclude_ingredients:
+            filtered_products = filtered_products.exclude(ingredients__igd_name=ingredient)
+
+        for vegan in certification_names:
+            vegans = vegan.split(',')
+            for x in vegans:
+                filtered_products = filtered_products.filter(vegan_cert__vg_company=x.strip())
 
         # 필터링된 products를 직렬화하여 반환합니다.
         serialized_products = ProductSerializer(filtered_products, many=True)

@@ -8,8 +8,9 @@ from config.settings import AWS_ACCESS_KEY_ID, AWS_REGION, AWS_SECRET_ACCESS_KEY
 VALID_IMAGE_EXTENSIONS = [ "jpg", "jpeg", "png", "gif" ]
 
 class IngredientFilterSerializer(serializers.Serializer):
-    include_ingredients = serializers.ListField(child=serializers.CharField(), required=False)
-    exclude_ingredients = serializers.ListField(child=serializers.CharField(), required=False)
+    include_ingredients = serializers.ListField(required=False, allow_empty=True, child=serializers.CharField(max_length=255))
+    exclude_ingredients = serializers.ListField(required=False, allow_empty=True, child=serializers.CharField(max_length=255))
+    certification_names = serializers.ListField(required=False, allow_empty=True, child=serializers.CharField(max_length=255))
 
 class MarketSerializer(serializers.ModelSerializer):
     class Meta:
