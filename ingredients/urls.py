@@ -15,5 +15,4 @@ urlpatterns = [
 
     path('<int:id>/products/', IngredientProducts.as_view()),
 
-    path('bookmarked/', BookmarkIngredient.as_view()),
 ]
