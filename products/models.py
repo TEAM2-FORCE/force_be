@@ -27,7 +27,7 @@ class Product(BaseModel):
     cg_id = models.IntegerField(choices=CHOICES, null = True) #에러 막기 위한 null 값 
 
     # 성분에서 상품 역참조 이름 product_ingredients로 명시
-    ingredients = models.ForeignKey(Ingredient, related_name = "product_ingredients", verbose_name="상품이 포함하는 성분들", blank=True, on_delete = models.CASCADE)
+    ingredients = models.ManyToManyField(Ingredient, through='ProductIngredient', related_name='products_ingredient', blank=True)
 
 # 다대다 관계를 일대다, 다대일로 풀기 위한 중간 모델 생성
 class ProductIngredient(BaseModel):

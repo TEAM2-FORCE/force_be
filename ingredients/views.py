@@ -119,7 +119,7 @@ class IngredientProducts(APIView):
 
     def get(self, request, id):
         ingredient = self.get_object(id)
-        products = ingredient.product.all()
+        products = ingredient.products.all()
         serializer = IgdSerializer(products, many=True)
         return Response(serializer.data)
 
