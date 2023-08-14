@@ -9,8 +9,15 @@ admin.site.register(Wishlist)
 class ProductIngredientInline(admin.TabularInline):  
     model = IngredientProduct
 
+class ProductVeganInline(admin.TabularInline):
+    model = Vegan
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     inlines = [
-        ProductIngredientInline,  
+        ProductIngredientInline, 
     ]
+
+@admin.register(Vegan)
+class ProductVeganAdmin(admin.ModelAdmin):
+    pass

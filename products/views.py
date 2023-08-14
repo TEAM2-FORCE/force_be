@@ -41,7 +41,6 @@ class ProductsList(ListAPIView):
         else:
             products = product_query
         
-        serializer = ProductSerializer(products, many=True)
         return products
     
     def post(self, request, format=None):
@@ -50,7 +49,22 @@ class ProductsList(ListAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.data, status=status.HTTP_404_NOT_FOUND)
-    
+
+    # def post(self, request, formant=None):
+    #     product = Product.object.all()
+    #     serializer = ProductSerializer(data = request.data)
+
+    #     vegan_data = request.data.copy()
+    #     vegan_serializer = ProductSerializer(data = vegan_data)
+
+    #     if serializer.is_valid():
+    #         vegan = vegan_serializer.save()
+            
+    #         product.vegan_cert.add(vegan)
+
+    #         return Response(serializer, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class ProductDetail(APIView):
     def get_object(self, id):
         try:
