@@ -88,7 +88,7 @@ from rest_framework.decorators import action
 class IgdSearchListView(generics.ListAPIView):
     queryset = Ingredient.objects.all()
     serializer_class = IgdSerializer
-    search_fields = ('igd_name','igd_main_ftn')
+    search_fields = ('igd_name',)
     filter_backends = [SearchFilter]
 
 from .filters import IgdCautionFilter
@@ -130,6 +130,7 @@ class IngredientProducts(APIView):
 
         product_serializer = ProductSerializer(data=product_data)
         
+        if product_serializer.is_valid():
         if product_serializer.is_valid():
             # 성분 생성
             ingredient = product_serializer.save()
