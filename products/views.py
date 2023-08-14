@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
-from .models import Product, Market, Vegan, Wishlist, ProductIngredient
-from .serializers import ProductSerializer, MarketSerializer, VeganSerializer, WishlistSerializer
+from .models import Product, Market, Vegan, Wishlist
+from .serializers import ProductSerializer, MarketSerializer, VeganSerializer, WishlistSerializer, IngredientFilterSerializer
 
 from ingredients.serializers import IgdSerializer
 
@@ -19,6 +19,36 @@ from rest_framework.permissions import IsAuthenticated
 
 from rest_framework import generics
 from rest_framework.filters import SearchFilter
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+class ProductFilterView(APIView):
+    def get(self, request, format=None):
+        serializer = IngredientFilterSerializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+
+        include_ingredients = serializer.validated_data.get('include_ingredients', [])
+        exclude_ingredients = serializer.validated_data.get('exclude_ingredients', [])
+        certification_names = serializer.validated_data.get('certification_names', [])
+
+        filtered_products = Product.objects.all()
+
+        for ingredient in include_ingredients:
+            ingredients = ingredient.split(',')
+            for ing in ingredients:
+                filtered_products = filtered_products.filter(ingredients__igd_name=ing.strip())
+
+        for ingredient in exclude_ingredients:
+            filtered_products = filtered_products.exclude(ingredients__igd_name=ingredient)
+
+        for vegan in certification_names:
+            vegans = vegan.split(',')
+            for x in vegans:
+                filtered_products = filtered_products.filter(vegan_cert__vg_company=x.strip())
+
+        serialized_products = ProductSerializer(filtered_products, many=True)
+        return Response(serialized_products.data)
 
 class ProductsList(ListAPIView):
     serializer_class = ProductSerializer
@@ -41,7 +71,6 @@ class ProductsList(ListAPIView):
         else:
             products = product_query
         
-        serializer = ProductSerializer(products, many=True)
         return products
     
     def post(self, request, format=None):
@@ -50,7 +79,7 @@ class ProductsList(ListAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.data, status=status.HTTP_404_NOT_FOUND)
-    
+
 class ProductDetail(APIView):
     def get_object(self, id):
         try:
@@ -97,13 +126,13 @@ class ProductCategory(APIView):
         
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
-    
+
 class ProductSearchListView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     search_fields = ('pd_name', 'pd_brand')
     filter_backends = [SearchFilter]
-
+    
 class MarketList(APIView):
     def post(self, request, id): 
         request_data_copy = request.data.copy() # mutable 한 딕셔너리로 카피하는 메서드
@@ -197,5 +226,3 @@ class ProductIngredients(APIView):
             return Response(ingredient_serializer.data, status=status.HTTP_201_CREATED)
         
         return Response(ingredient_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-

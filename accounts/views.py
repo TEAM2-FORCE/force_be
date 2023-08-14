@@ -58,8 +58,6 @@ def google_callback(request):
     body = json.loads(request.body.decode('utf-8'))
     code = body['code']
     state = 'state_parameter_passthrough_value'
-
-
     redirect_uri = get_redirect_url(request)
     #redirect_uri = 'http://localhost:3000/oauth2redirect'
 

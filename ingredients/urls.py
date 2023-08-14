@@ -14,4 +14,5 @@ urlpatterns = [
     path('filter/', IgdFilterListView.as_view(), name = 'ingredeint_caution_list'),
 
     path('<int:id>/products/', IngredientProducts.as_view()),
+
 ]

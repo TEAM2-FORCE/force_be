@@ -138,5 +138,3 @@ class IngredientProducts(APIView):
         
         return Response(product_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
-    
