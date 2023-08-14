@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
-from .models import Product, Market, Vegan, Wishlist, ProductIngredient
+from .models import Product, Market, Vegan, Wishlist
 from .serializers import ProductSerializer, MarketSerializer, VeganSerializer, WishlistSerializer, IngredientFilterSerializer
 
 from ingredients.serializers import IgdSerializer
@@ -20,32 +20,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 from rest_framework.filters import SearchFilter
 
-from rest_framework import filters, viewsets
-from django_filters.rest_framework import DjangoFilterBackend
-from django_filters import FilterSet
-from django.db.models import Q
-
-
-# class ProductFilter(FilterSet):
-#     included_ingredients = filters.CharField(method='filter_included_ingredients')
-#     excluded_ingredients = filters.CharField(method='filter_excluded_ingredients')
-#     # filtering_vegan = filters.CharFilter(method='filter_vegan')
-
-#     class Meta:
-#         model = Product
-#         fields = ['included_ingredients', 'excluded_ingredients']
-    
-#     def filter_included_ingredients(self, queryset, name, value):
-#         ingredients = value.split(',')
-#         for ingredient in ingredients:
-#             queryset = queryset.filter(ingredients__name__iexact=ingredient.strip())
-#         return queryset
-
-#     def filter_excluded_ingredients(self, queryset, name, value):
-#         ingredients = value.split(',')
-#         for ingredient in ingredients:
-#             queryset = queryset.exclude(ingredients__name__iexact=ingredient.strip())
-#         return queryset
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -73,7 +47,6 @@ class ProductFilterView(APIView):
             for x in vegans:
                 filtered_products = filtered_products.filter(vegan_cert__vg_company=x.strip())
 
-        # 필터링된 products를 직렬화하여 반환합니다.
         serialized_products = ProductSerializer(filtered_products, many=True)
         return Response(serialized_products.data)
 
