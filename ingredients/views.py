@@ -18,7 +18,7 @@ class IgdList(APIView):
     # 전체 성분 조회
     def get(self, request, format = None):
         igds = Ingredient.objects.all().order_by('igd_name')
-        serializer = IgdSerializer(igds, many = True) #다수 객체 이용
+        serializer = IgdSerializer(igds, many = True, context={'request':request}) #다수 객체 이용
         return Response(serializer.data)
 
     # 성분 데이터 DB 저장
@@ -40,7 +40,6 @@ class IgdDetail(APIView):
         serializer = IgdSerializer(igd)
         return Response(serializer.data)
     
-        
 
 class IgdBm(APIView):
 
@@ -49,7 +48,7 @@ class IgdBm(APIView):
     # 북마크한 성분 전체 조회
     def get(self, request, format = None):
         bm_lists = Bookmark.objects.filter(user = request.user)
-        serializer = IgdBmSerializer(bm_lists, many = True) #다수 객체 이용
+        serializer = IgdBmSerializer(bm_lists, many = True, context={'request':request}) #다수 객체 이용
         return Response(serializer.data)
 
     # 성분 북마크하기
