@@ -23,6 +23,8 @@ from rest_framework.filters import SearchFilter
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from rest_framework.permissions import AllowAny
+
 class ProductFilterView(APIView):
     def get(self, request, format=None):
         serializer = IngredientFilterSerializer(data=request.query_params)
@@ -66,14 +68,17 @@ class ProductsList(APIView):
         else:
             products = product_query
 
-        user = self.request.user
-        wished_product_ids = Wishlist.objects.filter(user=user).values_list('product_id', flat=True)
+        if not self.request.user.is_authenticated:
+            serializer = ProductSerializer(products, many=True, context=self.get_serializer_context()) 
+            return Response(serializer.data)
+        else :
+            user = self.request.user
+            wished_product_ids = Wishlist.objects.filter(user=user).values_list('product_id', flat=True)
 
-        for product in products:
-            product.wished_pd = product.pd_id in wished_product_ids  # pd_id 사용
-
-        serializer = ProductSerializer(products, many=True)
-        return Response(serializer.data)  
+            for product in products:
+                product.wished_pd = product.pd_id in wished_product_ids  
+        
+        return Response(serializer.data)
           
     def get_serializer_context(self):
         return {'request': self.request}
