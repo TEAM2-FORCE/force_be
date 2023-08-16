@@ -104,7 +104,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -116,10 +115,11 @@ DATABASES = {
         'PASSWORD' : get_secret("DB_PASSWORD"),
         'HOST' : get_secret("DB_HOST"),
         # 'PASSWORD' : '1234',
-        #  'HOST' : 'localhost',
+        # 'HOST' : 'localhost',
         'PORT' : '3306',
     }
 }
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',

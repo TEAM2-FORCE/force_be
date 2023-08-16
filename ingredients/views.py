@@ -14,11 +14,11 @@ from rest_framework.permissions import IsAuthenticated
 
 
 class IgdList(APIView):
-    
+
     # 전체 성분 조회
     def get(self, request, format = None):
         igds = Ingredient.objects.all().order_by('igd_name')
-        serializer = IgdSerializer(igds, many = True) #다수 객체 이용
+        serializer = IgdSerializer(igds, many = True, context={'request':request}) #다수 객체 이용
         return Response(serializer.data)
 
     # 성분 데이터 DB 저장
@@ -29,18 +29,17 @@ class IgdList(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
-        else : 
+        else :
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
-        
+
 class IgdDetail(APIView):
 
     # 개별 성분 조회
     def get(self, request, id):
         igd = get_object_or_404(Ingredient, igd_id = id)
-        serializer = IgdSerializer(igd)
+        serializer = IgdSerializer(igd, context={'request':request})
         return Response(serializer.data)
-    
-        
+
 
 class IgdBm(APIView):
 
@@ -49,12 +48,12 @@ class IgdBm(APIView):
     # 북마크한 성분 전체 조회
     def get(self, request, format = None):
         bm_lists = Bookmark.objects.filter(user = request.user)
-        serializer = IgdBmSerializer(bm_lists, many = True) #다수 객체 이용
+        serializer = IgdBmSerializer(bm_lists, many = True, context={'request':request}) #다수 객체 이용
         return Response(serializer.data)
 
     # 성분 북마크하기
     def post(self, request, igd_id, foramt = None):
-        
+
         try :
             igd = Ingredient.objects.get(igd_id = igd_id)
         except Ingredient.DoesNotExist:
@@ -62,18 +61,18 @@ class IgdBm(APIView):
 
 
         data = {
-            "user" : request.user.id, 
+            "user" : request.user.id,
             "igd" : igd.igd_id,
         }
 
-        serializer = IgdBmSerializer(data = data)
-        
+        serializer = IgdBmSerializer(data = data, context={'request':request})
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
-        else : 
+        else :
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
-    
+
     # 성분 북마크 삭제하기
     def delete(self, request, igd_id):
         igd = get_object_or_404(Bookmark, igd_id = igd_id)
@@ -108,7 +107,7 @@ class IgdFilterListView(generics.ListAPIView) :
             queryset = queryset.filter(igd_caution=igd_caution)
 
         return queryset
-        
+
 
 class IngredientProducts(APIView):
     def get_object(self, id):
@@ -129,12 +128,13 @@ class IngredientProducts(APIView):
         product_data['ingredients'] = [ingredient.igd_id]  # 제품과 연결하기 위해 product pk 추가
 
         product_serializer = ProductSerializer(data=product_data)
-        
+
         if product_serializer.is_valid():
             # 성분 생성
             ingredient = product_serializer.save()
 
             return Response(product_serializer.data, status=status.HTTP_201_CREATED)
-        
+
         return Response(product_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 

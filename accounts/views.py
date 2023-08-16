@@ -48,7 +48,7 @@ def get_redirect_url(request):
     if host == 'http://localhost:3000/':
         redirect_uri = 'http://localhost:3000/oauth2redirect'
     else:
-        redirect_uri = 'https://vebeserver.kro.kr/oauth2redirect'
+        redirect_uri = 'https://vebeserver.kro.kr:8000/oauth2redirect'
 
     return redirect_uri
 
@@ -58,7 +58,6 @@ def google_callback(request):
     body = json.loads(request.body.decode('utf-8'))
     code = body['code']
     state = 'state_parameter_passthrough_value'
-    
     redirect_uri = get_redirect_url(request)
     #redirect_uri = 'http://localhost:3000/oauth2redirect'
 
@@ -134,12 +133,12 @@ def google_callback(request):
 
     
 ################################
-# from dj_rest_auth.registration.views import SocialLoginView
-# from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-# from allauth.socialaccount.providers.google import views as google_view
+from dj_rest_auth.registration.views import SocialLoginView
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from allauth.socialaccount.providers.google import views as google_view
 
-# class GoogleLogin(SocialLoginView):
-#     adapter_class = google_view.GoogleOAuth2Adapter
-#     callback_url = GOOGLE_CALLBACK_URI
-#     client_class = OAuth2Client
+class GoogleLogin(SocialLoginView):
+    adapter_class = google_view.GoogleOAuth2Adapter
+    callback_url = GOOGLE_CALLBACK_URI
+    client_class = OAuth2Client
     
