@@ -9,6 +9,7 @@ TEST = LOCAL_URL + 'accounts/google/callback/'
 # def google_login(request):
 #     scope = "https://www.googleapis.com/auth/userinfo.email " + \
 #             "https://www.googleapis.com/auth/userinfo.profile"
+#     #client_id = '1084783697214-fg1r9e3q4glg96hl5t15ghmsr1piicko.apps.googleusercontent.com'
 #     client_id = '569562316946-jn23hdqjtkkosssbgrt06hpo2bat4ujp.apps.googleusercontent.com'
 #     return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&response_type=code&redirect_uri={GOOGLE_CALLBACK_URI}&scope={scope}")
 
@@ -59,7 +60,7 @@ def google_callback(request):
     code = body['code']
     state = 'state_parameter_passthrough_value'
     redirect_uri = get_redirect_url(request)
-    #redirect_uri = 'http://localhost:3000/oauth2redirect'
+   
 
     # 1. 받은 코드로 구글에 access token 요청
     token_req = requests.post(f"https://oauth2.googleapis.com/token?client_id={client_id}&client_secret={client_secret}&code={code}&grant_type=authorization_code&redirect_uri={redirect_uri}&state={state}")
@@ -127,6 +128,7 @@ def google_callback(request):
 
         accept_json = accept.json()
         accept_json.pop('user', None)
+    
         return JsonResponse(accept_json)
 
     
@@ -141,4 +143,17 @@ class GoogleLogin(SocialLoginView):
     adapter_class = google_view.GoogleOAuth2Adapter
     callback_url = GOOGLE_CALLBACK_URI
     client_class = OAuth2Client
-    
+
+#################################
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+class GoogleProfileName(APIView):
+    def get(self, request):
+        user = request.user  # 현재 로그인한 사용자
+        user_data = {
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+        }
+        
+        return Response(user_data)

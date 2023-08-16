@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
 from .models import Product, Market, Vegan, Wishlist
-from .serializers import ProductSerializer, MarketSerializer, VeganSerializer, WishlistSerializer, IngredientFilterSerializer
+from .serializers import ProductSerializer, MarketSerializer, VeganSerializer, WishlistSerializer, IngredientFilterSerializer, ProductGetSerializer
 
 from ingredients.serializers import IgdSerializer
 
@@ -50,29 +50,39 @@ class ProductFilterView(APIView):
         serialized_products = ProductSerializer(filtered_products, many=True)
         return Response(serialized_products.data)
 
-class ProductsList(ListAPIView):
-    serializer_class = ProductSerializer
-
-    def get_queryset(self):
-        sort_std = self.request.query_params.get('sort', 'default')
+class ProductsList(APIView):
+    def get(self, request, format=None):
+        sort_std = request.query_params.get('sort', 'default')
         product_query = Product.objects.all()
 
         if sort_std == 'default':
             products = product_query.order_by('-pd_like_cnt')
-        
         elif sort_std == 'name':
             products = product_query.order_by('pd_name')
-        
         elif sort_std == 'price':
             products = product_query.order_by('pd_price')
-
         elif sort_std == '-price':
             products = product_query.order_by('-pd_price')
         else:
             products = product_query
-        
-        return products
-    
+
+        user = self.request.user
+        wished_product_ids = Wishlist.objects.filter(user=user).values_list('product_id', flat=True)
+
+        for product in products:
+            product.wished_pd = product.pd_id in wished_product_ids  # pd_id 사용
+
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)  
+          
+    def get_serializer_context(self):
+        return {'request': self.request}
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = ProductSerializer(queryset, many=True, context=self.get_serializer_context())
+        return Response(serializer.data)
+
     def post(self, request, format=None):
         serializer = ProductSerializer(data = request.data)
         if serializer.is_valid():
@@ -89,12 +99,12 @@ class ProductDetail(APIView):
 
     def get(self, request, id):
         product = self.get_object(id)
-        serializer = ProductSerializer(product)
+        serializer = ProductSerializer(product,context={'request':request})
         return Response(serializer.data)
 
     def put(self, request, id):
         product = Product.objects.get(pd_id=id)
-        serializer = ProductSerializer(product, data=request.data)
+        serializer = ProductSerializer(product, data=request.data, context={'request':request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -167,9 +177,9 @@ class WishlistList(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, id):
+    def get(self, request):
         wishlist = Wishlist.objects.filter(user = request.user)
-        serializer = WishlistSerializer(wishlist, many = True)
+        serializer = WishlistSerializer(wishlist, many = True, context={'request':request})
         return Response(serializer.data)
 
     def post(self, request, id, foramt = None):
@@ -183,7 +193,7 @@ class WishlistList(APIView):
             "product" : product.pd_id,
         }
 
-        serializer = WishlistSerializer(data = data)
+        serializer = WishlistSerializer(data = data, context={'request':request})
         
         if serializer.is_valid():
             serializer.save()
