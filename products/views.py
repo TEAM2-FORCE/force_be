@@ -53,6 +53,9 @@ class ProductFilterView(APIView):
         return Response(serialized_products.data)
 
 class ProductsList(APIView):
+    def get_serializer_context(self):
+        return {'request': self.request}
+    
     def get(self, request, format=None):
         sort_std = request.query_params.get('sort', 'default')
         product_query = Product.objects.all()
@@ -78,10 +81,8 @@ class ProductsList(APIView):
             for product in products:
                 product.wished_pd = product.pd_id in wished_product_ids  
         
+        serializer = ProductSerializer(products, many=True, context=self.get_serializer_context()) 
         return Response(serializer.data)
-          
-    def get_serializer_context(self):
-        return {'request': self.request}
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
