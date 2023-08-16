@@ -50,7 +50,6 @@ class ProductSerializer(serializers.ModelSerializer):
             except:
                 raise serializers.ValidationError("Invalid Image File")
     
-
     wished_pd = serializers.SerializerMethodField()
 
     def get_wished_pd(self, obj):
@@ -76,3 +75,4 @@ class ProductGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = "__all__"
+

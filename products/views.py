@@ -79,7 +79,7 @@ class ProductsList(APIView):
                 product.wished_pd = product.pd_id in wished_product_ids  
         
         return Response(serializer.data)
-
+          
     def get_serializer_context(self):
         return {'request': self.request}
 
@@ -87,7 +87,7 @@ class ProductsList(APIView):
         queryset = self.get_queryset()
         serializer = ProductSerializer(queryset, many=True, context=self.get_serializer_context())
         return Response(serializer.data)
-    
+
     def post(self, request, format=None):
         serializer = ProductSerializer(data = request.data)
         if serializer.is_valid():
