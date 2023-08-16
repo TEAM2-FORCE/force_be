@@ -22,10 +22,7 @@ class VeganSerializer(serializers.ModelSerializer):
           model = Vegan
           fields = "__all__"
 
-class WishlistSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Wishlist
-        fields = "__all__"
+
 
 class ProductSerializer(serializers.ModelSerializer):
     ingredients = IgdSerializer(many=True, read_only=True)
@@ -51,3 +48,22 @@ class ProductSerializer(serializers.ModelSerializer):
                 return data
             except:
                 raise serializers.ValidationError("Invalid Image File")
+    
+
+    wished_pd = serializers.SerializerMethodField()
+
+    def get_wished_pd(self, obj):
+        user = self.context.get('request').user
+        
+        if user.is_authenticated:
+            wished_products = user.wish_product_id.all()
+            return wished_products.filter(product=obj).exists()
+        
+        return False
+    
+class WishlistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Wishlist
+        fields = "__all__"
+    
+    products_contents = ProductSerializer(source='product', read_only=True)
