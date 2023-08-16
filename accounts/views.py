@@ -130,7 +130,7 @@ def google_callback(request):
         accept_json.pop('user', None)
     
         return JsonResponse(accept_json)
-        
+
     
 
     
@@ -143,7 +143,6 @@ class GoogleLogin(SocialLoginView):
     adapter_class = google_view.GoogleOAuth2Adapter
     callback_url = GOOGLE_CALLBACK_URI
     client_class = OAuth2Client
-
 
 #################################
 from rest_framework.views import APIView
