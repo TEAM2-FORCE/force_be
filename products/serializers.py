@@ -48,6 +48,15 @@ class ProductSerializer(serializers.ModelSerializer):
                 s3.upload_fileobj(image, AWS_STORAGE_BUCKET_NAME, image.name)
                 img_url = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com/{image.name}"
                 data['pd_image'] = img_url
+                print(img_url)
                 return data
             except:
                 raise serializers.ValidationError("Invalid Image File")
+
+class ProductGetSerializer(serializers.ModelSerializer):
+    # pd_image = Product.CharField(null=True, blank=True, verbose_name="상품 대표 사진")
+    pd_image = serializers.CharField(source="product.pd_image", read_only=True)
+
+    class Meta:
+        model = Product
+        fields = "__all__"
