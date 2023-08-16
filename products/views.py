@@ -23,6 +23,8 @@ from rest_framework.filters import SearchFilter
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from rest_framework.permissions import AllowAny
+
 class ProductFilterView(APIView):
     def get(self, request, format=None):
         serializer = IngredientFilterSerializer(data=request.query_params)
@@ -57,21 +59,35 @@ class ProductsList(APIView):
 
         if sort_std == 'default':
             products = product_query.order_by('-pd_like_cnt')
-        
         elif sort_std == 'name':
             products = product_query.order_by('pd_name')
-        
         elif sort_std == 'price':
             products = product_query.order_by('pd_price')
-
         elif sort_std == '-price':
             products = product_query.order_by('-pd_price')
         else:
             products = product_query
+
+        if not self.request.user.is_authenticated:
+            serializer = ProductSerializer(products, many=True, context=self.get_serializer_context()) 
+            return Response(serializer.data)
+        else :
+            user = self.request.user
+            wished_product_ids = Wishlist.objects.filter(user=user).values_list('product_id', flat=True)
+
+            for product in products:
+                product.wished_pd = product.pd_id in wished_product_ids  
         
-        serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = ProductSerializer(queryset, many=True, context=self.get_serializer_context())
+        return Response(serializer.data)
+    
     def post(self, request, format=None):
         serializer = ProductSerializer(data = request.data)
         if serializer.is_valid():
@@ -88,12 +104,12 @@ class ProductDetail(APIView):
 
     def get(self, request, id):
         product = self.get_object(id)
-        serializer = ProductSerializer(product)
+        serializer = ProductSerializer(product,context={'request':request})
         return Response(serializer.data)
 
     def put(self, request, id):
         product = Product.objects.get(pd_id=id)
-        serializer = ProductSerializer(product, data=request.data)
+        serializer = ProductSerializer(product, data=request.data, context={'request':request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -166,9 +182,9 @@ class WishlistList(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, id):
+    def get(self, request):
         wishlist = Wishlist.objects.filter(user = request.user)
-        serializer = WishlistSerializer(wishlist, many = True)
+        serializer = WishlistSerializer(wishlist, many = True, context={'request':request})
         return Response(serializer.data)
 
     def post(self, request, id, foramt = None):
@@ -182,7 +198,7 @@ class WishlistList(APIView):
             "product" : product.pd_id,
         }
 
-        serializer = WishlistSerializer(data = data)
+        serializer = WishlistSerializer(data = data, context={'request':request})
         
         if serializer.is_valid():
             serializer.save()
