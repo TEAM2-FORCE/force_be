@@ -128,7 +128,7 @@ def google_callback(request):
         accept_json = accept.json()
         accept_json.pop('user', None)
         return JsonResponse(accept_json)
-        
+
     
 
     

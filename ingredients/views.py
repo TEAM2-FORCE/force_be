@@ -37,7 +37,7 @@ class IgdDetail(APIView):
     # 개별 성분 조회
     def get(self, request, id):
         igd = get_object_or_404(Ingredient, igd_id = id)
-        serializer = IgdSerializer(igd)
+        serializer = IgdSerializer(igd, context={'request':request})
         return Response(serializer.data)
     
 
@@ -65,7 +65,7 @@ class IgdBm(APIView):
             "igd" : igd.igd_id,
         }
 
-        serializer = IgdBmSerializer(data = data)
+        serializer = IgdBmSerializer(data = data, context={'request':request})
         
         if serializer.is_valid():
             serializer.save()
