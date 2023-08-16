@@ -7,7 +7,7 @@ class IgdSerializer(serializers.ModelSerializer):
         model = Ingredient
         fields = "__all__"
 
-     # 북마크 여부를 나타내는 커스텀 필드 추가
+    # 북마크 여부를 나타내는 커스텀 필드 추가
     bookmarked_igd = serializers.SerializerMethodField()
 
     def get_bookmarked_igd(self, obj):
