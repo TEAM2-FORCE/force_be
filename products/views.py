@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
 from .models import Product, Market, Vegan, Wishlist
-from .serializers import ProductSerializer, MarketSerializer, VeganSerializer, WishlistSerializer, IngredientFilterSerializer
+from .serializers import ProductSerializer, MarketSerializer, VeganSerializer, WishlistSerializer, IngredientFilterSerializer, ProductGetSerializer
 
 from ingredients.serializers import IgdSerializer
 
@@ -50,10 +50,9 @@ class ProductFilterView(APIView):
         serialized_products = ProductSerializer(filtered_products, many=True)
         return Response(serialized_products.data)
 
-class ProductsList(ListAPIView):
-
-    def get_queryset(self):
-        sort_std = self.request.query_params.get('sort', 'default')
+class ProductsList(APIView):
+    def get(self, request, format=None):
+        sort_std = request.query_params.get('sort', 'default')
         product_query = Product.objects.all()
 
         if sort_std == 'default':
@@ -73,8 +72,9 @@ class ProductsList(ListAPIView):
         for product in products:
             product.wished_pd = product.pd_id in wished_product_ids  # pd_id 사용
 
-        return products
-
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)  
+          
     def get_serializer_context(self):
         return {'request': self.request}
 
@@ -82,7 +82,7 @@ class ProductsList(ListAPIView):
         queryset = self.get_queryset()
         serializer = ProductSerializer(queryset, many=True, context=self.get_serializer_context())
         return Response(serializer.data)
-    
+
     def post(self, request, format=None):
         serializer = ProductSerializer(data = request.data)
         if serializer.is_valid():
