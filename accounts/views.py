@@ -128,11 +128,8 @@ def google_callback(request):
 
         accept_json = accept.json()
         accept_json.pop('user', None)
-        
-        refresh = RefreshToken.for_user(user)
-        return JsonResponse({'access_token': str(refresh.access_token)})
-
-        #return JsonResponse(accept_json)
+    
+        return JsonResponse(accept_json)
         
     
 
