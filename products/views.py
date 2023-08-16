@@ -121,6 +121,9 @@ class ProductDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class ProductCategory(APIView):
+    def get_serializer_context(self):
+        return {'request': self.request}
+    
     def get(self, request, cg_id):
         sort_std = self.request.query_params.get('sort', 'default')
         product_query = Product.objects.filter(cg_id=cg_id)
@@ -139,7 +142,9 @@ class ProductCategory(APIView):
         else:
             products = product_query
         
-        serializer = ProductSerializer(products, many=True)
+        # serializer = ProductSerializer(products, many=True)
+        serializer = ProductSerializer(products, many=True, context=self.get_serializer_context()) 
+
         return Response(serializer.data)
 
 class ProductSearchListView(generics.ListAPIView):
