@@ -12,3 +12,8 @@ urlpatterns = [
 
     path('ingredients/', include('ingredients.urls')),
 ]
+
+# nginx(웹서버) 정적파일 로딩
+from django.conf.urls.static import static
+from django.conf import settings
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

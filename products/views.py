@@ -26,6 +26,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
 class ProductFilterView(APIView):
+    def get_serializer_context(self):
+        return {'request': self.request}
+    
     def get(self, request, format=None):
         serializer = IngredientFilterSerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
@@ -49,7 +52,9 @@ class ProductFilterView(APIView):
             for x in vegans:
                 filtered_products = filtered_products.filter(vegan_cert__vg_company=x.strip())
 
-        serialized_products = ProductSerializer(filtered_products, many=True)
+        # serialized_products = ProductSerializer(filtered_products, many=True)
+        serialized_products = ProductSerializer(filtered_products, many=True, context=self.get_serializer_context()) 
+
         return Response(serialized_products.data)
 
 class ProductsList(APIView):
