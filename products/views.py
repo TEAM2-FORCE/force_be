@@ -26,6 +26,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
 class ProductFilterView(APIView):
+    def get_serializer_context(self):
+        return {'request': self.request}
+    
     def get(self, request, format=None):
         serializer = IngredientFilterSerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
@@ -49,10 +52,15 @@ class ProductFilterView(APIView):
             for x in vegans:
                 filtered_products = filtered_products.filter(vegan_cert__vg_company=x.strip())
 
-        serialized_products = ProductSerializer(filtered_products, many=True)
+        # serialized_products = ProductSerializer(filtered_products, many=True)
+        serialized_products = ProductSerializer(filtered_products, many=True, context=self.get_serializer_context()) 
+
         return Response(serialized_products.data)
 
 class ProductsList(APIView):
+    def get_serializer_context(self):
+        return {'request': self.request}
+    
     def get(self, request, format=None):
         sort_std = request.query_params.get('sort', 'default')
         product_query = Product.objects.all()
@@ -78,10 +86,8 @@ class ProductsList(APIView):
             for product in products:
                 product.wished_pd = product.pd_id in wished_product_ids  
         
+        serializer = ProductSerializer(products, many=True, context=self.get_serializer_context()) 
         return Response(serializer.data)
-          
-    def get_serializer_context(self):
-        return {'request': self.request}
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -212,7 +218,7 @@ class WishlistList(APIView):
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request, id):
-        product = get_object_or_404(Product, pd_id = id)
+        product = get_object_or_404(Wishlist, product_id = id)
         product.delete()
         return Response(status = status.HTTP_204_NO_CONTENT)
 

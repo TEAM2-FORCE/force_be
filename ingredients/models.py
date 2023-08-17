@@ -27,7 +27,7 @@ class Ingredient(BaseModel) :
     )
     
     igd_id = models.AutoField(verbose_name = "성분id", primary_key = True) #pk 명시
-    igd_name = models.CharField(verbose_name = "성분명", max_length = 20, null = False)
+    igd_name = models.CharField(verbose_name = "성분명", max_length = 50, null = False)
     igd_ewg_harzard = models.IntegerField(choices = CHOICES, verbose_name = "EWG등급-위험도등급", null = True)
     igd_ewg_harzard_no = models.CharField(verbose_name = "EWG등급-위험도숫자", max_length = 10, null = True) #숫자 범위로 표현될 가능성 있어서 charfield
     igd_ewg_data = models.IntegerField(choices = CHOICES2, verbose_name = "EWG등급-데이터등급", null = True)
