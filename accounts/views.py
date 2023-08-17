@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 
-BASE_URL = 'http://vebeserver.kro.kr:8000/'
+BASE_URL = 'http://vebeserver.o-r.kr/'
 LOCAL_URL = 'http://localhost:8000/'
 GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
 TEST = LOCAL_URL + 'accounts/google/callback/'
