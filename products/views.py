@@ -213,7 +213,7 @@ class WishlistList(APIView):
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request, id):
-        product = get_object_or_404(Product, pd_id = id)
+        product = get_object_or_404(Wishlist, product_id = id)
         product.delete()
         return Response(status = status.HTTP_204_NO_CONTENT)
 
