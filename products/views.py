@@ -75,6 +75,8 @@ class ProductsList(APIView):
             products = product_query.order_by('-pd_price')
         else:
             products = product_query
+            
+        print(sort_std)    
 
         if not self.request.user.is_authenticated:
             serializer = ProductSerializer(products, many=True, context=self.get_serializer_context()) 
@@ -173,6 +175,11 @@ class MarketList(APIView):
         markets = Market.objects.filter(product=id)
         serializer = MarketSerializer(markets, many=True)
         return Response(serializer.data)
+    
+    def delete(self, request, id):
+        market = Market.objects.filter(product=id)
+        market.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
 class VeganList(APIView):
     def post(self, request, id): 
