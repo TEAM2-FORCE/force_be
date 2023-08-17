@@ -174,6 +174,11 @@ class MarketList(APIView):
         serializer = MarketSerializer(markets, many=True)
         return Response(serializer.data)
     
+    def delete(self, request, id):
+        market = Market.objects.filter(product=id)
+        market.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
 class VeganList(APIView):
     def post(self, request, id): 
         request_data_copy = request.data.copy() 
