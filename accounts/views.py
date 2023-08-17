@@ -49,7 +49,7 @@ def get_redirect_url(request):
     if host == 'http://localhost:3000/':
         redirect_uri = 'http://localhost:3000/oauth2redirect'
     else:
-        redirect_uri = 'https://vebeserver.kro.kr:8000/oauth2redirect'
+        redirect_uri = 'https://vebeserver.o-r.kr/oauth2redirect'
 
     return redirect_uri
 
