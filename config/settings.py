@@ -81,9 +81,13 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [ 
     "http://localhost:3000", # 리액트 포트번호 3000
     "http://127.0.0.1:3000", # "프론트 도메인 주소"
+    'https://vebe.netlify.app',
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://vebeserver.o-r.kr']
+CSRF_TRUSTED_ORIGINS = [
+    'https://vebeserver.o-r.kr',
+    'https://vebe.netlify.app',
+]
 
 ROOT_URLCONF = 'config.urls'
 
