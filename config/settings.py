@@ -84,6 +84,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000", # "프론트 도메인 주소"
 ]
 
+CSRF_TRUSTED_ORIGINS = ['https://vebeserver.o-r.kr']
+
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
