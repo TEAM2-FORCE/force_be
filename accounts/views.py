@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 
-BASE_URL = 'http://vebeserver.kro.kr:8000/'
+BASE_URL = 'https://vebeserver.o-r.kr/'
 LOCAL_URL = 'http://localhost:8000/'
 GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
 TEST = LOCAL_URL + 'accounts/google/callback/'
@@ -49,7 +49,7 @@ def get_redirect_url(request):
     if host == 'http://localhost:3000/':
         redirect_uri = 'http://localhost:3000/oauth2redirect'
     else:
-        redirect_uri = 'https://vebeserver.o-r.kr/oauth2redirect'
+        redirect_uri = 'https://vebe.netlify.app/oauth2redirect'
 
     return redirect_uri
 
