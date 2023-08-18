@@ -49,7 +49,7 @@ def get_redirect_url(request):
     if host == 'https://prod-server.com':
         redirect_uri = 'https://vebe.netlify.app/oauth2redirect'
     else:
-        print("error")
+        redirect_uri = 'https://vebe.netlify.app/oauth2redirect'
 
     return redirect_uri
 
