@@ -113,8 +113,16 @@ def google_callback(request):
         if accept_status != 200:
             return JsonResponse({'err_msg': 'failed to signin'}, status=accept_status)
 
+        # refresh = RefreshToken.for_user(user)
+        # return JsonResponse({'access_token': str(refresh.access_token)})
+
         refresh = RefreshToken.for_user(user)
-        return JsonResponse({'access_token': str(refresh.access_token)})
+        response_data = {'access_token': str(refresh.access_token)}
+
+        response = JsonResponse(response_data)
+        response["Access-Control-Allow-Origin"] = "https://vebe.netlify.app"  # 프론트엔드 도메인
+        response["Access-Control-Allow-Credentials"] = "true"  # 크로스 도메인 쿠키 전달을 위한 설정
+
 
     except User.DoesNotExist:
         # 전달받은 이메일로 기존에 가입된 유저가 아예 없으면 => 새로 회원가입 & 해당 유저의 jwt 발급

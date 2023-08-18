@@ -66,6 +66,7 @@ THIRD_PARTY_APPS = [
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', #corsMiddleware 위치 위로 변경
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -73,17 +74,22 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = [ 
-    "http://localhost:3000", # 리액트 포트번호 3000
-    "http://127.0.0.1:3000", # "프론트 도메인 주소"
-]
+CORS_ORIGIN_ALLOW_ALL = True # 모든 호스트에 허용 (괜찮을지는 의문..)
+# CORS_ALLOWED_ORIGINS = [ 
+#     "http://localhost:3000", # 리액트 포트번호 3000
+#     "http://127.0.0.1:3000", # "프론트 도메인 주소"
+#     "https://vebe.netlify.app",
+#     "https://127.0.0.1:3000",
+# ]
 
-CSRF_TRUSTED_ORIGINS = ['https://vebeserver.o-r.kr']
+CSRF_TRUSTED_ORIGINS = [
+    'https://vebeserver.o-r.kr',
+    'https://vebe.netlify.app',
+]
 
 ROOT_URLCONF = 'config.urls'
 
