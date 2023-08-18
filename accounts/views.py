@@ -123,6 +123,7 @@ def google_callback(request):
         response["Access-Control-Allow-Origin"] = "https://vebe.netlify.app"  # 프론트엔드 도메인
         response["Access-Control-Allow-Credentials"] = "true"  # 크로스 도메인 쿠키 전달을 위한 설정
 
+        return response
 
     except User.DoesNotExist:
         # 전달받은 이메일로 기존에 가입된 유저가 아예 없으면 => 새로 회원가입 & 해당 유저의 jwt 발급
