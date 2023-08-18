@@ -4,15 +4,14 @@ from django.shortcuts import redirect
 BASE_URL = 'https://vebeserver.o-r.kr/'
 LOCAL_URL = 'http://localhost:8000/'
 
-GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback'
+GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
 
 # TEST = LOCAL_URL + 'accounts/google/callback/'
 
 def google_login(request):
      scope = "https://www.googleapis.com/auth/userinfo.email " + \
              "https://www.googleapis.com/auth/userinfo.profile"
-     client_id = '1084783697214-fg1r9e3q4glg96hl5t15ghmsr1piicko.apps.googleusercontent.com'
-#     client_id = '569562316946-jn23hdqjtkkosssbgrt06hpo2bat4ujp.apps.googleusercontent.com'
+     client_id = "569562316946-jn23hdqjtkkosssbgrt06hpo2bat4ujp.apps.googleusercontent.com"
      return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&response_type=code&redirect_uri={GOOGLE_CALLBACK_URI}&scope={scope}")
 
 ################################
@@ -56,7 +55,7 @@ def get_redirect_url(request):
     return redirect_uri
 
 def google_callback(request):
-    client_id = '1084783697214-fg1r9e3q4glg96hl5t15ghmsr1piicko.apps.googleusercontent.com'
+    client_id = '569562316946-jn23hdqjtkkosssbgrt06hpo2bat4ujp.apps.googleusercontent.com'
     client_secret = get_secret('CLIENT_SECRET')
     code = request.GET.get('code')
    # body = json.loads(request.body.decode('utf-8'))
