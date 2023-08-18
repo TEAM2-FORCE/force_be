@@ -76,8 +76,6 @@ class ProductsList(APIView):
         else:
             products = product_query
             
-        print(sort_std)    
-
         if not self.request.user.is_authenticated:
             serializer = ProductSerializer(products, many=True, context=self.get_serializer_context()) 
             return Response(serializer.data)
