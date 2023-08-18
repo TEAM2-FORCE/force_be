@@ -8,7 +8,7 @@ GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback'
 
 # TEST = LOCAL_URL + 'accounts/google/callback/'
 
- def google_login(request):
+def google_login(request):
      scope = "https://www.googleapis.com/auth/userinfo.email " + \
              "https://www.googleapis.com/auth/userinfo.profile"
      client_id = '1084783697214-fg1r9e3q4glg96hl5t15ghmsr1piicko.apps.googleusercontent.com'
