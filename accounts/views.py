@@ -8,11 +8,18 @@ GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
 
 # TEST = LOCAL_URL + 'accounts/google/callback/'
 
-def google_login(request):
-     scope = "https://www.googleapis.com/auth/userinfo.email " + \
-             "https://www.googleapis.com/auth/userinfo.profile"
-     client_id = "569562316946-jn23hdqjtkkosssbgrt06hpo2bat4ujp.apps.googleusercontent.com"
-     return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&response_type=code&redirect_uri={GOOGLE_CALLBACK_URI}&scope={scope}")
+#def google_login(request) :
+#    user = User.objects.get(id = 1)
+#    refresh = RefreshToken.for_user(new_user_info)
+#    response_data = {'access_token': str(refresh.access_token)}
+
+#    return JsonResponse(response_data)
+
+#def google_login(request):
+#     scope = "https://www.googleapis.com/auth/userinfo.email " + \
+#             "https://www.googleapis.com/auth/userinfo.profile"
+#     client_id = "569562316946-jn23hdqjtkkosssbgrt06hpo2bat4ujp.apps.googleusercontent.com"
+#     return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&response_type=code&redirect_uri={GOOGLE_CALLBACK_URI}&scope={scope}")
 
 ################################
 from pathlib import Path
@@ -136,3 +143,10 @@ class GoogleProfileName(APIView):
             'last_name': user.last_name,
         }
         return Response(user_data)
+
+def google_login(request) :
+    user = User.objects.get(id = 1)
+    refresh = RefreshToken.for_user(user)
+    response_data = {'access_token': str(refresh.access_token)}
+
+    return JsonResponse(response_data)
