@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 BASE_URL = 'https://vebeserver.o-r.kr/'
 LOCAL_URL = 'http://localhost:8000/'
 GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
-TEST = LOCAL_URL + 'accounts/google/callback/'
+# TEST = LOCAL_URL + 'accounts/google/callback/'
 
 # def google_login(request):
 #     scope = "https://www.googleapis.com/auth/userinfo.email " + \
@@ -59,7 +59,8 @@ def google_callback(request):
     body = json.loads(request.body.decode('utf-8'))
     code = body['code']
     state = 'state_parameter_passthrough_value'
-    redirect_uri = get_redirect_url(request)
+    # redirect_uri = get_redirect_url(request)
+    redirect_uri = 'https://vebe.netlify.app/oauth2redirect'
    
 
     # 1. 받은 코드로 구글에 access token 요청
