@@ -46,8 +46,8 @@ def get_secret(setting, secrets=secrets):
 def get_redirect_url(request):
     host = request.META.get('HTTP_REFERER')
     
-    if host == 'https://prod-server.com':
-        redirect_uri = 'https://vebe.netlify.app/oauth2redirect'
+    if host == 'http://localhost:3000/':
+        redirect_uri = 'http://localhost:3000/oauth2redirect'
     else:
         redirect_uri = 'https://vebe.netlify.app/oauth2redirect'
 
