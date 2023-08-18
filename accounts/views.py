@@ -6,7 +6,6 @@ LOCAL_URL = 'http://localhost:8000/'
 
 GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback'
 
-GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
 # TEST = LOCAL_URL + 'accounts/google/callback/'
 
 # def google_login(request):
