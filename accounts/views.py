@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 BASE_URL = 'https://vebeserver.o-r.kr/'
 LOCAL_URL = 'http://localhost:8000/'
 GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
-TEST = LOCAL_URL + 'accounts/google/callback/'
+# TEST = LOCAL_URL + 'accounts/google/callback/'
 
 # def google_login(request):
 #     scope = "https://www.googleapis.com/auth/userinfo.email " + \
@@ -46,8 +46,8 @@ def get_secret(setting, secrets=secrets):
 def get_redirect_url(request):
     host = request.META.get('HTTP_REFERER')
     
-    if host == 'https://prod-server.com':
-        redirect_uri = 'https://vebe.netlify.app/oauth2redirect'
+    if host == 'http://localhost:3000/':
+        redirect_uri = 'http://localhost:3000/oauth2redirect'
     else:
         redirect_uri = 'https://vebe.netlify.app/oauth2redirect'
 
@@ -58,10 +58,9 @@ def google_callback(request):
     client_secret = get_secret('CLIENT_SECRET')
     body = json.loads(request.body.decode('utf-8'))
     code = body['code']
-    # code = request.GET.get('code')
     state = 'state_parameter_passthrough_value'
-    # redirect_uri = get_redirect_url(request)
-    redirect_uri = GOOGLE_CALLBACK_URI
+    redirect_uri = get_redirect_url(request)
+
    
 
     # 1. 받은 코드로 구글에 access token 요청
@@ -113,7 +112,7 @@ def google_callback(request):
         # 전달받은 이메일로 기존에 가입된 유저가 아예 없으면 => 새로 회원가입 & 해당 유저의 jwt 발급
 
         new_user_info = User(email=email).save()
-        print(new_user_info.email)
+        # print(new_user_info.email)
 
         refresh = RefreshToken.for_user(new_user_info)
         response_data = {'access_token': str(refresh.access_token)}
@@ -131,5 +130,6 @@ class GoogleProfileName(APIView):
             'first_name': user.first_name,
             'last_name': user.last_name,
         }
-        
-#         return Response(user_data)
+  
+  return Response(user_data)
+
