@@ -8,12 +8,12 @@ GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback'
 
 # TEST = LOCAL_URL + 'accounts/google/callback/'
 
-# def google_login(request):
-#     scope = "https://www.googleapis.com/auth/userinfo.email " + \
-#             "https://www.googleapis.com/auth/userinfo.profile"
-#     #client_id = '1084783697214-fg1r9e3q4glg96hl5t15ghmsr1piicko.apps.googleusercontent.com'
+ def google_login(request):
+     scope = "https://www.googleapis.com/auth/userinfo.email " + \
+             "https://www.googleapis.com/auth/userinfo.profile"
+     client_id = '1084783697214-fg1r9e3q4glg96hl5t15ghmsr1piicko.apps.googleusercontent.com'
 #     client_id = '569562316946-jn23hdqjtkkosssbgrt06hpo2bat4ujp.apps.googleusercontent.com'
-#     return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&response_type=code&redirect_uri={GOOGLE_CALLBACK_URI}&scope={scope}")
+     return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&response_type=code&redirect_uri={GOOGLE_CALLBACK_URI}&scope={scope}")
 
 ################################
 from pathlib import Path
@@ -58,10 +58,12 @@ def get_redirect_url(request):
 def google_callback(request):
     client_id = '1084783697214-fg1r9e3q4glg96hl5t15ghmsr1piicko.apps.googleusercontent.com'
     client_secret = get_secret('CLIENT_SECRET')
-    body = json.loads(request.body.decode('utf-8'))
-    code = body['code']
-    state = 'state_parameter_passthrough_value'
-    redirect_uri = get_redirect_url(request)
+    code = request.GET.get('code')
+   # body = json.loads(request.body.decode('utf-8'))
+   # code = body['code']
+  #  state = 'state_parameter_passthrough_value'
+    state = "random_state"
+    redirect_uri = GOOGLE_CALLBACK_URI
 
    
 
