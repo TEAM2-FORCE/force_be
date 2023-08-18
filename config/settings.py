@@ -87,7 +87,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://prod-server.com",
     "http://localhost:8000",
     "https://vebeserver.o-r.kr",
-    "http://vebeserverk.kro.kr"
+    "http://vebeserver.kro.kr"
 ]
 
 #CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:3000'
