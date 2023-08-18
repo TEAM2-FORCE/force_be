@@ -85,7 +85,14 @@ CORS_ALLOWED_ORIGINS = [
     "https://vebe.netlify.app",
     "https://127.0.0.1:3000",
     "https://prod-server.com",
+    "http://localhost:8000",
+    "https://vebeserver.o-r.kr",
+    "http://vebeserverk.kro.kr"
 ]
+
+#CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:3000'
+ #                        ,'http://localhost:3000'
+ #                        ,'*']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://vebeserver.o-r.kr',

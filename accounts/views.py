@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 
 BASE_URL = 'https://vebeserver.o-r.kr/'
 LOCAL_URL = 'http://localhost:8000/'
-GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
+GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback'
 TEST = LOCAL_URL + 'accounts/google/callback/'
 
 # def google_login(request):
@@ -76,7 +76,7 @@ def google_callback(request):
 
     #### 1-3. 성공 시 access_token 가져오기
     access_token = token_req_json.get('access_token')
-
+    
 
     #### 2. 가져온 access_token으로 이메일값을 구글에 요청
     email_req = requests.get(f"https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}")
@@ -123,7 +123,9 @@ def google_callback(request):
         response["Access-Control-Allow-Origin"] = "https://vebe.netlify.app"  # 프론트엔드 도메인
         response["Access-Control-Allow-Credentials"] = "true"  # 크로스 도메인 쿠키 전달을 위한 설정
 
-
+        
+        return response
+        
     except User.DoesNotExist:
         # 전달받은 이메일로 기존에 가입된 유저가 아예 없으면 => 새로 회원가입 & 해당 유저의 jwt 발급
         data = {'access_token': access_token, 'code': code}
