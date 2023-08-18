@@ -25,7 +25,7 @@ def get_secret(setting, secrets=secrets):
 SECRET_KEY = get_secret("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # 모든 IP 허용
 ALLOWED_HOSTS = ['*']
@@ -87,7 +87,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://prod-server.com",
     "http://localhost:8000",
     "https://vebeserver.o-r.kr",
-    "http://vebeserver.kro.kr"
+    "http://vebeserveir.kro.kr"
 ]
 
 #CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:3000'
