@@ -1,7 +1,7 @@
 # VEBE - BE
 https://vebe.netlify.app/
 
-# Dj<img width="901" alt="스크린샷 2023-08-21 오후 2 47 19" src="https://github.com/TEAM2-FORCE/force_be/assets/96538554/48c72589-4b2c-4761-9d49-b6bc3466bf88">
+# <img width="901" alt="스크린샷 2023-08-21 오후 2 47 19" src="https://github.com/TEAM2-FORCE/force_be/assets/96538554/48c72589-4b2c-4761-9d49-b6bc3466bf88">
 ango Coding Conventions
 
 - 들여쓰기는 스페이스를 4칸 이용한다.
